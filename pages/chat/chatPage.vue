@@ -1,0 +1,172 @@
+<template>
+	<view>
+		<view class="chatTopBar">
+			<uni-icons type="back" size="24"></uni-icons>
+			<view class="chatFriendInfo">
+				<text class="friendName">{{this.name}}</text>
+				<text class="friendStatus">在线</text>
+			</view>
+			<uni-icons type="bars" size="24"></uni-icons>
+		</view>
+		<scroll-view class="chatContent" scroll-y="true">
+			<chat-message :messageList="message"></chat-message>
+		</scroll-view>
+		<send-message-input></send-message-input>
+	</view>
+</template>
+
+<script>
+	import ChatMessage from '../../components/chatMessage.vue'
+	import SendMessageInput from '../../components/sendMessageInput.vue'
+	export default {
+		components:{
+			ChatMessage,
+			SendMessageInput
+		},
+		data() {
+			return {
+				name:'',
+				message:[
+					{
+						content:'昨天下午 6:31',
+						type:'time'
+					},
+					{
+						content:'你好啊',
+						type:'others'
+					},
+					{
+						content:'你也好啊',
+						type:'myself'
+					},
+					{
+						content:'很高兴认识你',
+						type:'myself'
+					},
+					{
+						content:'你高兴得太早了辉丰股份规范规范vn海军空军很快就回一条狗羽绒服他如果凤凰股份海景房机会改变看见过好久考我我还看炬华科技好了',
+						type:'others'
+					},
+					{
+						content:'昨天下午 6:31',
+						type:'time'
+					},
+					{
+						content:'你好啊',
+						type:'others'
+					},
+					{
+						content:'你也好啊了快捷方式拉达克解放啦考试记录开始搭建拉开数据库拉法基埃里克森京东方拉克丝达拉斯会计分录卡设计费卢卡斯建档立卡世界来看的骄傲离开',
+						type:'myself'
+					},
+					{
+						content:'很高兴认识你',
+						type:'myself'
+					},
+					{
+						content:'你高兴得太早了',
+						type:'others'
+					},
+					{
+						content:'昨天下午 6:31',
+						type:'time'
+					},
+					{
+						content:'你好啊',
+						type:'others'
+					},
+					{
+						content:'你也好啊',
+						type:'myself'
+					},
+					{
+						content:'很高兴认识你',
+						type:'myself'
+					},
+					{
+						content:'你高兴得太早了',
+						type:'others'
+					},
+					{
+						content:'昨天下午 6:31',
+						type:'time'
+					},
+					{
+						content:'你好啊',
+						type:'others'
+					},
+					{
+						content:'你也好啊',
+						type:'myself'
+					},
+					{
+						content:'很高兴认识你',
+						type:'myself'
+					},
+					{
+						content:'你高兴得太早了',
+						type:'others'
+					},
+					{
+						content:'昨天下午 6:31',
+						type:'time'
+					},
+					{
+						content:'你好啊',
+						type:'others'
+					},
+					{
+						content:'你也好啊',
+						type:'myself'
+					},
+					{
+						content:'很高兴认识你',
+						type:'myself'
+					},
+					{
+						content:'你高兴得太早了',
+						type:'others'
+					}
+				]
+			};
+		},
+		onLoad:function(option){
+			this.name = option.name
+			console.log(this.name)
+		},
+	}
+</script>
+
+<style lang="scss">
+.chatTopBar{
+	background: #f8f8f8;
+	position: fixed;
+	z-index: 999;
+	height: 150rpx;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 80rpx 20rpx 0;
+
+	display: flex;
+	justify-content: space-between;
+	
+	.chatFriendInfo{
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		.friendStatus{
+			font-size: 24rpx;
+		}
+	}
+}
+.chatContent{
+	position: relative;
+	top: 0rpx;
+	padding-top:150rpx;
+	padding-bottom: 120rpx;
+	overflow: hidden;
+	box-sizing: border-box;
+	height: 100vh;
+	background: #f8f8f8;
+}
+</style>
