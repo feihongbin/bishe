@@ -4,11 +4,15 @@
 			<view v-if="item.type === 'time'" class="chatTime">
 				{{item.content}}
 			</view>
+			
 			<view v-else :class="['chatText',item.type === 'myself' ? 'myselfChatContent' : '']">
 				<image class="avatar" src="../static/logo.png" mode=""></image>
 				<text :class="['content',item.type === 'myself' ? 'myContent' : '']">{{item.content}}</text>
+				<!-- <u-tooltip :text='<text :class="['content',item.type === 'myself' ? 'myContent' : '']'>{{item.content}}</text>"></u-tooltip> -->
+				<!-- <u-tooltip :text="item.content">{{item.content}}</u-tooltip> -->
 			</view>
 		</view>
+		
 	</view>
 </template>
 

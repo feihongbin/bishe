@@ -5,7 +5,7 @@
 			<text class="content">已向 <text class="phoneNum">+86 13777899752 </text> 发送验证码</text>
 		</view>
 		<view class="codeInput">
-			验证码
+			<u-code-input mode="line" maxlength="4" hairline color="#f56c6c" :focus="true"></u-code-input>
 		</view>
 		<text class="resend">重新发送</text>
 	</view>
@@ -25,7 +25,7 @@
 .code{
 	background: #fff;
 	.tips{
-		padding: 40rpx 20rpx;
+		padding: 40rpx 20rpx 20rpx;
 		.title{
 			display: block;
 			font-size: 72rpx;
@@ -38,7 +38,7 @@
 	}
 	.codeInput{
 		display: flex;
-		margin: 40rpx 0 40rpx;
+		margin: 0rpx 0 40rpx;
 		padding: 20rpx;
 		.areaId{
 			color: #58aff1;
