@@ -1,36 +1,36 @@
 <template>
-	<view class="homeContainer">
-		<u-overlay :show="show" @click="addFriends">
-			<!-- 			<view class="warp"> -->
-			<!-- 	<view class="rect" @tap.stop></view> -->
-			<view class="addScreen">
-				<view class="addItem">
-					<uni-icons class="icon" type="paperplane-filled" size="28"></uni-icons>
-					<text>创建群聊</text>
+	<view>
+		<view class="homeContainer">
+			<u-overlay :show="show" @click="addFriends">
+				<view class="addScreen">
+					<view class="addItem">
+						<uni-icons class="icon" type="paperplane-filled" size="28"></uni-icons>
+						<text>创建群聊</text>
+					</view>
+					<view class="addItem">
+						<uni-icons class="icon" type="personadd-filled" size="28"></uni-icons>
+						<text>添加好友</text>
+					</view>
 				</view>
-				<view class="addItem">
-					<uni-icons class="icon" type="personadd-filled" size="28"></uni-icons>
-					<text>添加好友</text>
+			</u-overlay>
+
+			<view class="topBar">
+				<view class="topBarContent">
+					<text>消息</text>
+					<uni-icons type="plusempty" size="24" @click="addFriends"></uni-icons>
 				</view>
-			</view>
-			<!-- </view> -->
-		</u-overlay>
 
-		<view class="topBar">
-			<view class="topBarContent">
-				<text>消息</text>
-				<uni-icons type="plusempty" size="24" @click="addFriends"></uni-icons>
+				<search></search>
 			</view>
-
-			<search></search>
-		</view>
-		<view class="messages" v-for="(messageItem,index) in messageList" :key="messageItem.key">
-			<message :id="messageItem.key" :name="messageItem.name" :time="messageItem.time"
-				:content="messageItem.content" :messageNumber="messageItem.messageNumber"></message>
+			<view class="messages" v-for="(messageItem,index) in messageList" :key="messageItem.key">
+				<message :id="messageItem.key" :name="messageItem.name" :time="messageItem.time"
+					:content="messageItem.content" :messageNumber="messageItem.messageNumber"></message>
+			</view>
 		</view>
 		<view class="bottomNav">
 			<view class="navItem" @click="changeNavItem(navItems[0])">
-				<uni-icons :type="navItems[0]" :color="navItems[0] === 'chatbubble-filled' ? '#3c91ff':''" size="30">
+				<uni-icons :type="navItems[0]" :color="navItems[0] === 'chatbubble-filled' ? '#3c91ff':''"
+					size="30">
 				</uni-icons>
 				<text :class="{navName:true,clicked:navItems[0]==='chatbubble-filled'}">消息</text>
 				<text class="notReadmessageCounts"
@@ -47,20 +47,21 @@
 				</uni-icons>
 				<text :class="{navName:true,clicked:navItems[2]==='person-filled'}">我的</text>
 			</view>
-
+		
 		</view>
 	</view>
+
 </template>
 
 <script>
 	import Search from '../../components/search.vue'
 	import Message from '../../components/message.vue'
-	import AddScreen from '../../components/messageAdd.vue'
+	import Mine from '../../pages/mine/mine.vue'
 	export default {
 		components: {
 			Search,
 			Message,
-			AddScreen
+			Mine
 		},
 		filters: {
 			isNumberOverflow(num) {
@@ -94,7 +95,12 @@
 						content: '我是张三',
 						messageNumber: 99
 					}
-				]
+				],
+				navMap:new Map([
+					['chatbubble','home'],
+					['staff','contacts'],
+					['person','mine']
+				])
 			};
 		},
 		methods: {
@@ -108,7 +114,11 @@
 							return item + '-filled'
 						} else return item
 					})
+					uni.navigateTo({
+						url:`../${this.navMap.get(str)}/${this.navMap.get(str)}`
+					})
 				}
+				
 
 			},
 			addFriends() {
@@ -197,13 +207,16 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		.addItem{
+
+		.addItem {
 			display: flex;
 			align-items: center;
-			.icon{
+
+			.icon {
 				padding-left: 20rpx;
 			}
-			text{
+
+			text {
 				padding-left: 20rpx;
 			}
 		}
@@ -216,7 +229,7 @@
 		border: 15rpx solid transparent;
 		border-bottom: 20rpx solid #fff;
 		position: absolute;
-		top:-35rpx;
+		top: -35rpx;
 		right: 30rpx;
 	}
 </style>
