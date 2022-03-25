@@ -93,6 +93,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/contacts/addFriend/addFriend",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "添加",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

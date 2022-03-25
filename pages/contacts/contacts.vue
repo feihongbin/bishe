@@ -3,7 +3,7 @@
 		<view class="topBar">
 			<view class="topBarContent">
 				<text>联系人</text>
-				<uni-icons type="personadd" size="24" ></uni-icons>
+				<uni-icons type="personadd" size="24" @click="toAddFriend"></uni-icons>
 			</view>
 		
 			<search></search>
@@ -44,6 +44,11 @@
 		methods:{
 			tabClick(item){
 				this.currentTab = item.index
+			},
+			toAddFriend(){
+				uni.navigateTo({
+					url:'./addFriend/addFriend'
+				})
 			}
 		}
 	}
