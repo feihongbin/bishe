@@ -8,7 +8,7 @@
 			<input type="password" placeholder="请输入密码" />
 		</view>
 		<view class="loginBtn">
-			<button type="primary" @click="login">登录</button>
+			<button type="primary" @click="loginAccount">登录</button>
 		</view>
 		<view class="loginSpan">
 			<view class="spanCtx">
@@ -26,7 +26,18 @@
 			};
 		},
 		methods:{
-			login(){
+			loginAccount(){
+				// uni.request({
+				// 	url:this.$baseUrl+'/users/login',
+				// 	method:'post',
+				// 	data:{
+				// 		phone:'13777899752',
+				// 		code:'0571'
+				// 	},
+				// 	success:(data)=>{
+				// 		console.log("请求成功",data)
+				// 	}
+				// })
 				uni.navigateTo({
 					url:'../home/home'
 				})
@@ -38,7 +49,7 @@
 			},
 			register(){
 				uni.navigateTo({
-					url:'../register/register'
+					url:'../register/index'
 				})
 			}
 		}

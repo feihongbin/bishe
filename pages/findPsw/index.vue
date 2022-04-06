@@ -19,7 +19,6 @@
 		},
 		methods:{
 			next(){
-				console.log(1)
 				uni.navigateTo({
 					url:'./phone'
 				})

@@ -8,7 +8,7 @@
 			<text class="areaId">+86</text>
 			<input type="text" placeholder="请输入手机号" v-model="phoneNumber" />
 		</view>
-		<button type="primary" :disabled="phoneNumber.length !== 11">下一步</button>
+		<button type="primary" :disabled="phoneNumber.length !== 11" @click="next()">下一步</button>
 	</view>
 </template>
 
@@ -17,6 +17,13 @@
 		data(){
 			return{
 				phoneNumber:''
+			}
+		},
+		methods:{
+			next(){
+				uni.navigateTo({
+					url:'./findPsw'
+				})
 			}
 		}
 	}

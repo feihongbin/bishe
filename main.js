@@ -7,6 +7,7 @@ Vue.config.productionTip = false
 Vue.use(uView);
 App.mpType = 'app'
 
+Vue.prototype.$baseUrl='http://localhost:3000'
 const app = new Vue({
     ...App
 })

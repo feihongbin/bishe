@@ -56,7 +56,7 @@
 		    
 		}
         ,{
-            "path" : "pages/register/register",
+            "path" : "pages/register/index",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
@@ -72,8 +72,17 @@
 		        "enablePullDownRefresh": false
 		    }
 		    
-		}
-        ,{
+		},
+		{
+		    "path" : "pages/register/register",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+        {
             "path" : "pages/mine/mine",
             "style" :                                                                                    
             {
@@ -101,7 +110,71 @@
                 "enablePullDownRefresh": false
             }
             
+        },
+		{
+		    "path" : "pages/findPsw/findPsw",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "设置密码",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+        ,{
+            "path" : "pages/findPsw/success",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "密码设置成功",
+                "enablePullDownRefresh": false
+            }
+            
         }
+        ,{
+            "path" : "pages/register/success",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        
+        ,{
+            "path" : "pages/mine/editInfo/birth",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择生日日期",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+		{
+            "path" : "pages/mine/editInfo/location",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "所在地",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+		{
+		    "path" : "pages/mine/editInfo/native",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "故乡",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/mine/editInfo/career",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "职业",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
