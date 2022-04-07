@@ -8,10 +8,13 @@
 			</view>
 			<uni-icons type="bars" size="24"></uni-icons>
 		</view>
-		<scroll-view class="chatContent" scroll-y="true">
-			<chat-message :messageList="message"></chat-message>
+		<scroll-view class="chatContent" scroll-y="true" scroll-with-animation="true">
+			<view class="">
+				<chat-message :messageList="message"></chat-message>
+			</view>
+			<view v-if="isShowBlank" class="blankContent"></view>
 		</scroll-view>
-		<send-message-input></send-message-input>
+		<send-message-input @showBlank="showBlank"></send-message-input>
 	</view>
 </template>
 
@@ -127,13 +130,20 @@
 						content:'你高兴得太早了',
 						type:'others'
 					}
-				]
+				],
+				isShowBlank:false
 			};
 		},
 		onLoad:function(option){
 			this.name = option.name
 			console.log(this.name)
 		},
+		methods:{
+			showBlank(val){
+				console.log(val)
+				this.isShowBlank = val
+			}
+		}
 	}
 </script>
 
@@ -168,5 +178,8 @@
 	box-sizing: border-box;
 	height: 100vh;
 	background: #f8f8f8;
+}
+.blankContent{
+	height: 278px;
 }
 </style>

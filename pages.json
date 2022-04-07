@@ -33,7 +33,8 @@
             {
                 // "navigationBarTitleText": "",
                 // "enablePullDownRefresh": false
-				"navigationStyle":"custom"
+				"navigationStyle":"custom",
+				"softinputMode":"adjustResize"
             }
             
         }
