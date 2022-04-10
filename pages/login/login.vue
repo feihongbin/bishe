@@ -4,8 +4,8 @@
 			<image src="../../static/logo.png" width="20rpx" mode=""></image>
 		</view>
 		<view class="loginInput">
-			<input type="text" placeholder="请输入账号" />
-			<input type="password" placeholder="请输入密码" />
+			<input type="text" v-model="account" placeholder="请输入账号" />
+			<input type="password" v-model="password" placeholder="请输入密码" />
 		</view>
 		<view class="loginBtn">
 			<button type="primary" @click="loginAccount">登录</button>
@@ -22,25 +22,41 @@
 	export default {
 		data() {
 			return {
-
+				account:'',
+				password:''
 			};
 		},
 		methods:{
 			loginAccount(){
-				// uni.request({
-				// 	url:this.$baseUrl+'/users/login',
-				// 	method:'post',
-				// 	data:{
-				// 		phone:'13777899752',
-				// 		code:'0571'
-				// 	},
-				// 	success:(data)=>{
-				// 		console.log("请求成功",data)
-				// 	}
+				if(this.account && this.password){
+					uni.request({
+						url:this.$baseUrl+'/users/login',
+						method:'post',
+						data:{
+							account:this.account,
+							password:this.password
+						},
+						success:(data)=>{
+							console.log(data.data.code)
+							if(data.data.code === 200){
+								uni.setStorage({
+									key: 'accountId',
+									data: data.data.account,
+									success: function () {
+										uni.navigateTo({
+											url:`../home/home`
+										})
+									}
+								});
+								
+							}
+						}
+					})
+					
+				}
+				// uni.navigateTo({
+				// 	url:`../home/home`
 				// })
-				uni.navigateTo({
-					url:'../home/home'
-				})
 			},
 			findPsw(){
 				uni.navigateTo({

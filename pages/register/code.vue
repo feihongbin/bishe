@@ -8,7 +8,8 @@
 			<u-code-input mode="line" maxlength="4" hairline color="#f56c6c" :focus="true" @finish="finish">
 			</u-code-input>
 		</view>
-		<text :class="countdown > 0 ? 'cantResend' : 'resend'" @click="resend">重新发送<text v-if="this.countdown > 0">({{countdown}})</text></text>
+		<text :class="countdown > 0 ? 'cantResend' : 'resend'" @click="resend">重新发送<text
+				v-if="this.countdown > 0">({{countdown}})</text></text>
 	</view>
 </template>
 
@@ -17,22 +18,22 @@
 		data() {
 			return {
 				phoneNumber: '',
-				inputCode:'',
-				countdown:0,
-				intervalId:''
+				inputCode: '',
+				countdown: 0,
+				intervalId: ''
 			}
 		},
-		
+
 		methods: {
 			finish(e) {
 				// console.log(typeof this.inputCode,typeof e)
-				// console.log(this.inputCode === e)
-				// if(this.inputCode === e){
-				// 	console.log(123124)
+				console.log(this.inputCode)
+				if (this.inputCode === e) {
+					console.log(123124)
 					uni.navigateTo({
-						url:'./success'
+						url: `./register?phone=${this.phoneNumber}`
 					})
-				// }
+				}
 			},
 			sendRegisterCode(phone) {
 				uni.request({
@@ -43,24 +44,25 @@
 					},
 					success: (data) => {
 						this.inputCode = data.data.data
+						console.log(data)
 					}
 				})
 			},
-			setCountdown(){
-				if(this.intervalId || this.countdown <= 0){
+			setCountdown() {
+				if (this.intervalId || this.countdown <= 0) {
 					this.countdown = 10
 					clearInterval(this.intervalId)
 				}
-				this.intervalId = setInterval(()=>{
-					if(this.countdown > 0){
+				this.intervalId = setInterval(() => {
+					if (this.countdown > 0) {
 						this.countdown--
 					}
 					return
-				},1000)
-				
+				}, 1000)
+
 			},
-			resend(){
-				if(this.countdown <= 0){
+			resend() {
+				if (this.countdown <= 0) {
 					this.sendRegisterCode(this.phoneNumber)
 					this.setCountdown()
 				}
@@ -119,8 +121,9 @@
 		font-size: 28rpx;
 		margin: 0 20rpx;
 	}
-	.cantResend{
-		color:#6e6d6c;
+
+	.cantResend {
+		color: #6e6d6c;
 		font-size: 28rpx;
 		margin: 0 20rpx;
 	}

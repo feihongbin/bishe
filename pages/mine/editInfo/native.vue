@@ -16,7 +16,7 @@
 				</view>
 			</view>
 		</view>
-		<u-picker :show="show" ref="uPicker" :columns="columns" @confirm="confirm" @cancel="cancel()"></u-picker>
+		<u-picker :show="show" ref="uPicker" :columns="columns" @confirm="confirm" @cancel="cancel"></u-picker>
 	</view>
 </template>
 
@@ -37,8 +37,6 @@
 			}
 		},
 		onLoad(option) {
-			this.native = option.native
-			console.log(option)
 		},
 		methods: {
 			open() {
@@ -47,10 +45,50 @@
 			cancel() {
 				this.show = false
 			},
-			confirm(val) {
+			confirm(e) {
 				this.show = false
-				console.log(val)
+				let that = this
+				uni.getStorage({
+					key: 'accountId',
+					success: function(res) {
+						uni.request({
+							url: that.$baseUrl + '/users/info/setNative',
+							method: 'post',
+							data: {
+								account: res.data,
+								native: e.value[0]+'-'+e.value[1]
+							},
+							success: (data) => {
+								that.getNative()
+							}
+						})
+					}
+				})
+			},
+			getNative(){
+				let that = this
+				uni.getStorage({
+					key: 'accountId',
+					success: function(res) {
+						uni.request({
+							url: that.$baseUrl + '/users/info/getNative',
+							method: 'post',
+							data: {
+								account: res.data,
+							},
+							success:function(data){
+								that.native = data.data.native
+							}
+						})
+					}
+				})
 			}
+		},
+		onLoad() {
+			this.getNative()
+		},
+		onUnload(){
+			uni.$emit('refreshData')
 		}
 	}
 </script>

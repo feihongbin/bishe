@@ -29,8 +29,7 @@
 		</view>
 		<view class="bottomNav">
 			<view class="navItem" @click="changeNavItem(navItems[0])">
-				<uni-icons :type="navItems[0]" :color="navItems[0] === 'chatbubble-filled' ? '#3c91ff':''"
-					size="30">
+				<uni-icons :type="navItems[0]" :color="navItems[0] === 'chatbubble-filled' ? '#3c91ff':''" size="30">
 				</uni-icons>
 				<text :class="{navName:true,clicked:navItems[0]==='chatbubble-filled'}">消息</text>
 				<text class="notReadmessageCounts"
@@ -47,7 +46,7 @@
 				</uni-icons>
 				<text :class="{navName:true,clicked:navItems[2]==='person-filled'}">我的</text>
 			</view>
-		
+
 		</view>
 	</view>
 
@@ -96,10 +95,10 @@
 						messageNumber: 99
 					}
 				],
-				navMap:new Map([
-					['chatbubble','home'],
-					['staff','contacts'],
-					['person','mine']
+				navMap: new Map([
+					['chatbubble', 'home'],
+					['staff', 'contacts'],
+					['person', 'mine']
 				])
 			};
 		},
@@ -115,16 +114,18 @@
 						} else return item
 					})
 					uni.navigateTo({
-						url:`../${this.navMap.get(str)}/${this.navMap.get(str)}`
+						url: `../${this.navMap.get(str)}/${this.navMap.get(str)}`
 					})
 				}
-				
+
 
 			},
 			addFriends() {
 				this.show = !this.show
-			}
+			},
+			
 		}
+	
 	}
 </script>
 

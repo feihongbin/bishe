@@ -113,6 +113,16 @@
             
         },
 		{
+		    "path" : "pages/contacts/addFriend/searchResult",
+		    "style" :                                                                                    
+		    {
+		        // "navigationBarTitleText": "添加",
+		        // "enablePullDownRefresh": false
+				"navigationStyle":"custom"
+		    }
+		    
+		},
+		{
 		    "path" : "pages/findPsw/findPsw",
 		    "style" :                                                                                    
 		    {

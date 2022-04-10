@@ -37,8 +37,6 @@
 			}
 		},
 		onLoad(option) {
-			this.location = option.location
-			console.log(option)
 		},
 		methods: {
 			open() {
@@ -47,10 +45,50 @@
 			cancel() {
 				this.show = false
 			},
-			confirm(val) {
+			confirm(e) {
 				this.show = false
-				console.log(val)
+				let that = this
+				uni.getStorage({
+					key: 'accountId',
+					success: function(res) {
+						uni.request({
+							url: that.$baseUrl + '/users/info/setLocation',
+							method: 'post',
+							data: {
+								account: res.data,
+								location: e.value[0]+'-'+e.value[1]
+							},
+							success: (data) => {
+								that.getLocation()
+							}
+						})
+					}
+				})
+			},
+			getLocation(){
+				let that = this
+				uni.getStorage({
+					key: 'accountId',
+					success: function(res) {
+						uni.request({
+							url: that.$baseUrl + '/users/info/getLocation',
+							method: 'post',
+							data: {
+								account: res.data,
+							},
+							success:function(data){
+								that.location = data.data.location
+							}
+						})
+					}
+				})
 			}
+		},
+		onLoad() {
+			this.getLocation()
+		},
+		onUnload(){
+			uni.$emit('refreshData')
 		}
 	}
 </script>
