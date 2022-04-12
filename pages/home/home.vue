@@ -129,7 +129,7 @@
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	.topBar {
 		height: 180rpx;
 		background-color: #f2f2f2;

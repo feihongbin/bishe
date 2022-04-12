@@ -1,15 +1,17 @@
 <template>
-	<u-index-list :index-list="indexList" class="friendList">
-		<template v-for="(item, index) in itemArr">
-			<u-index-item>
-				<u-index-anchor bgColor="#fff" :text="indexList[index]"></u-index-anchor>
-				<view class="list-cell" v-for="(cell, index) in item">
-					<image src="../static/logo.png" mode=""></image>
-					<text>{{cell}}</text>
-				</view>
-			</u-index-item>
-		</template>
-	</u-index-list>
+	<view class="indexListContianer">
+		<u-index-list :index-list="indexList" class="friendList" :sticky="false">
+			<template v-for="(item, index) in itemArr">
+				<u-index-item>
+					<u-index-anchor bgColor="#fff" :text="indexList[index]"></u-index-anchor>
+					<view class="list-cell" v-for="(cell, index) in item">
+						<image src="../static/logo.png" mode=""></image>
+						<text>{{cell}}</text>
+					</view>
+				</u-index-item>
+			</template>
+		</u-index-list>
+	</view>
 </template>
 
 <script>
@@ -17,19 +19,11 @@
 		name: "friendList",
 		data() {
 			return {
-				indexList: ["A", "B", "C", "D", "E", "F", "G", "H", "I","J","K"],
+				indexList: ["A", "B"],
 				itemArr: [
 					['列表A1', '列表A2', '列表A3'],
 					['列表B1', '列表B2', '列表B3'],
-					['列表C1', '列表C2', '列表C3'],
-					['列表D1', '列表D2', '列表A3'],
-					['列表E1', '列表B2', '列表B3'],
-					['列表F1', '列表C2', '列表C3'],
-					['列表G1', '列表A2', '列表A3'],
-					['列表H1', '列表B2', '列表B3'],
-					['列表I1', '列表C2', '列表C3'],
-					['列表J1', '列表B2', '列表B3'],
-					['列表K1', '列表C2', '列表C3']
+			
 				]
 			};
 		}
@@ -65,5 +59,9 @@
 	}
 	// .u-border-bottom{
 	// 	margin: 10rpx 0 !important;
+	// }
+	// .indexListContianer{
+	// 	// height: 400rpx;
+	// 	overflow: hidden;
 	// }
 </style>

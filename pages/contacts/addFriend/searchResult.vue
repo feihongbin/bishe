@@ -1,23 +1,28 @@
 <template>
 	<view class="mineContainer">
-		<uni-icons type="back" size="24"></uni-icons>
-		<view class="info">
-			<image class="avatar" :src="userInfo.avatar" mode=""></image>
-			<view>
-				<text class="name">{{userInfo.name}}</text>
-				<text class="signature">{{userInfo.signature}}</text>
+		<view>
+			<uni-icons type="back" size="24"></uni-icons>
+			<view class="info">
+				<image class="avatar" :src="userInfo.avatar" mode=""></image>
+				<view>
+					<text class="name">{{userInfo.name}}</text>
+					<text class="signature">{{userInfo.signature}}</text>
+				</view>
+			</view>
+			<view class="detail">
+				<info-item  class="detailItem" label="账号" :content="userInfo.tid" :showArrow="false">
+				</info-item>
+				<info-item v-if="userInfo.gender" class="detailItem" label="性别" :content="userInfo.gender" :showArrow="false">
+				</info-item>
+				<info-item v-if="userInfo.birth" class="detailItem" label="生日" :content="formateStampToDate(Number.parseInt(userInfo.birth))"
+					:showArrow="false"></info-item>
+				<info-item v-if="userInfo.location" class="detailItem" label="所在地" :content="userInfo.location" :showArrow="false"></info-item>
+				<info-item v-if="userInfo.native" class="detailItem" label="家乡" :content="userInfo.native" :showArrow="false"></info-item>
+				<info-item v-if="userInfo.career" class="detailItem" label="职业" :content="userInfo.career" :showArrow="false"></info-item>
 			</view>
 		</view>
-		<view class="detail">
-			<info-item  class="detailItem" label="账号" :content="userInfo.tid" :showArrow="false">
-			</info-item>
-			<info-item v-if="userInfo.gender" class="detailItem" label="性别" :content="userInfo.gender" :showArrow="false">
-			</info-item>
-			<info-item v-if="userInfo.birth" class="detailItem" label="生日" :content="formateStampToDate(Number.parseInt(userInfo.birth))"
-				:showArrow="false"></info-item>
-			<info-item v-if="userInfo.location" class="detailItem" label="所在地" :content="userInfo.location" :showArrow="false"></info-item>
-			<info-item v-if="userInfo.native" class="detailItem" label="家乡" :content="userInfo.native" :showArrow="false"></info-item>
-			<info-item v-if="userInfo.career" class="detailItem" label="职业" :content="userInfo.career" :showArrow="false"></info-item>
+		<view class="addFriendBtn">
+			<button type="primary" @click="sendRequest">加为好友</button>
 		</view>
 	</view>
 </template>
@@ -45,6 +50,11 @@
 				// console.log(Y,M,D,timestamp,date)
 				return Y + M + D
 			},
+			sendRequest(){
+				uni.navigateTo({
+					url:'./sendRequest'
+				})
+			}
 		},
 		onLoad(option) {
 			uni.request({
@@ -68,7 +78,10 @@
 		padding: 80rpx 20rpx 0;
 		background-color: #f8f8f8;
 		height: 100vh;
-	
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		box-sizing: border;
 		.info {
 			display: flex;
 			align-items: center;
@@ -102,9 +115,14 @@
 			background-color: #FFFFFF;
 			border-radius: 20rpx;
 		}
+		.addFriendBtn{
+			margin-bottom: 100rpx;
+		}
 	}
 	
 	.detailItem:nth-child(1) {
 		padding-top: 40rpx;
 	}
+	
+
 </style>

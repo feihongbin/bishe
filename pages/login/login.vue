@@ -28,35 +28,35 @@
 		},
 		methods:{
 			loginAccount(){
-				if(this.account && this.password){
-					uni.request({
-						url:this.$baseUrl+'/users/login',
-						method:'post',
-						data:{
-							account:this.account,
-							password:this.password
-						},
-						success:(data)=>{
-							console.log(data.data.code)
-							if(data.data.code === 200){
-								uni.setStorage({
-									key: 'accountId',
-									data: data.data.account,
-									success: function () {
-										uni.navigateTo({
-											url:`../home/home`
-										})
-									}
-								});
+				// if(this.account && this.password){
+				// 	uni.request({
+				// 		url:this.$baseUrl+'/users/login',
+				// 		method:'post',
+				// 		data:{
+				// 			account:this.account,
+				// 			password:this.password
+				// 		},
+				// 		success:(data)=>{
+				// 			console.log(data.data.code)
+				// 			if(data.data.code === 200){
+				// 				uni.setStorage({
+				// 					key: 'accountId',
+				// 					data: data.data.account,
+				// 					success: function () {
+				// 						uni.navigateTo({
+				// 							url:`../home/home`
+				// 						})
+				// 					}
+				// 				});
 								
-							}
-						}
-					})
+				// 			}
+				// 		}
+				// 	})
 					
-				}
-				// uni.navigateTo({
-				// 	url:`../home/home`
-				// })
+				// }
+				uni.navigateTo({
+					url:`../home/home`
+				})
 			},
 			findPsw(){
 				uni.navigateTo({
