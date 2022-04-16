@@ -21,8 +21,8 @@
 		<view class="groupAndNote">
 			<view class="groupAndNoteTitle">设置备注和分组</view>
 			<view class="note">
-				<text v-model="note">备注</text>
-				<input class="noteCell" type="text" value="" />
+				<text>备注</text>
+				<input  v-model="note" class="noteCell" type="text" value="" />
 			</view>
 			<u-divider></u-divider>
 			<view class="group">
@@ -43,7 +43,7 @@
 				friendId:'',
 				message:'',
 				group:'宇宙之大',
-				note:'备注'
+				note:''
 			}
 		},
 		methods:{
@@ -65,12 +65,23 @@
 								friendId: that.friendId,
 								message: that.message,
 								group:that.group,
-								note:that.note
+								note:that.note,
+								isRead:false,
+								status:0
 							},
 							success: (data) => {
-								console.log('发送成功',data)
+								// console.log('发送成功',data)
+								that.socket.emit('newFriends',{
+									friendId:that.friendId,
+									account:res.data,
+									count:1,
+									message:that.message,
+									group:that.group,
+									note:that.note
+								})
 							}
 						})
+						
 					}
 				})
 			}

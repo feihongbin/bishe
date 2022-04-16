@@ -3,10 +3,7 @@
 		<view class="title">
 			好友通知
 		</view>
-		<add-friend-list-item ></add-friend-list-item>
-		<add-friend-list-item ></add-friend-list-item>
-		<add-friend-list-item ></add-friend-list-item>
-		<add-friend-list-item ></add-friend-list-item>
+		<add-friend-list-item v-for="(item,index) in newFriendList" :key="index" :friend="item"></add-friend-list-item>
 	</view>
 </template>
 
@@ -15,14 +12,39 @@
 	export default{
 		data(){
 			return{
-				
+				newFriendList:null
 			}
 		},
 		components:{
 			AddFriendListItem
 		},
 		methods:{
-			
+			getNewFriendList(){
+				let that = this
+				uni.getStorage({
+					key: 'accountId',
+					success: function(res) {
+						uni.request({
+							url: that.$baseUrl + '/users/home/newFriendList',
+							method: 'post',
+							data: {
+								account: res.data
+							},
+							success: (data) => {
+								that.newFriendList = data.data.newFriendList
+								console.log(that.newFriendList)
+							}
+						})
+					}
+				})
+				
+			}
+		},
+		onLoad() {
+			this.getNewFriendList()
+			uni.$on('updateNewFriendList',()=>{
+				this.getNewFriendList()
+			})
 		}
 		
 	}

@@ -39,7 +39,7 @@
 			toDetail(str){
 				console.log(str,111)
 				uni.navigateTo({
-					url:`../pages/contacts/addFriend/searchResult?id=${str}`
+					url:`/pages/contacts/addFriend/searchResult?id=${str}&isFriend=${true}`
 				})
 			}
 		}

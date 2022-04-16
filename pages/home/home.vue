@@ -48,6 +48,7 @@
 			</view>
 
 		</view>
+		<!-- <u-modal :show="modalShow" content=''></u-modal> -->
 	</view>
 
 </template>
@@ -73,8 +74,9 @@
 			return {
 				navItems: ['chatbubble-filled', 'staff', 'person'],
 				notReadMessages: 123,
-				newFriends: 2,
+				newFriends: 0,
 				show: false,
+				// modalShow:false,
 				// messageList: [{
 				// 		key: 1,
 				// 		name: '张三',
@@ -147,11 +149,66 @@
 					}
 				
 				})
+			},
+			watchNewFriend(){
+				let that = this
+				this.socket.on('newFriendRequest', data => {
+					console.log(data)
+					uni.getStorage({
+						key: 'accountId',
+						success: function(res) {
+							if(data.friendId === res.data){
+								console.log('zxasd')
+								// uni.getStorage({
+								// 	key:'newFriendCount',
+								// 	success:function(res) {
+								// 		that.newFriends = res.data + data.count
+								// 		uni.setStorage({
+								// 			key:'newFriendCount',
+								// 			data:res.data + data.count
+								// 		})
+								// 	}
+								// })
+								that.getNewFriendCount()
+							}
+						}
+					
+					})
+				})
+			},
+			getNewFriendCount(){
+				let that = this
+				uni.getStorage({
+					key: 'accountId',
+					success: function(res) {
+						uni.request({
+							url: that.$baseUrl + '/users/home/newFriendCount',
+							method: 'post',
+							data: {
+								account: res.data
+							},
+							success: (data) => {
+								that.newFriends = data.data.newFriendCount
+								uni.setStorage({
+									key:'newFriendCount',
+									data:data.data.newFriendCount
+								})
+							}
+						})
+					}
+				
+				})
+				
 			}
 			
 		},
 		onLoad() {
-			this.getMessageList()
+			this.getMessageList(),
+			this.watchNewFriend(),
+			this.getNewFriendCount()
+		},
+		onBackPress() {
+			
 		}
 	
 	}

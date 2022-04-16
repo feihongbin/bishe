@@ -10,6 +10,7 @@
 		</view>
 		<view class="newFriendTab" @click="checkNewFriend">
 			<text>新朋友</text>
+			<u-badge numberType="overflow"  max="99" :value="newFriends" :absolute="true" :offset="[18,30]"></u-badge>
 			<u-icon name="arrow-right"></u-icon>
 		</view>
 		<view class="friendsTab">
@@ -73,7 +74,7 @@
 				]),
 				navItems: ['chatbubble-filled', 'staff', 'person'],
 				notReadMessages: 123,
-				newFriends: 2,
+				newFriends: 0,
 				friendList:[],
 				indexList:[],
 				itemArr:[],
@@ -152,34 +153,47 @@
 				}
 				console.log(newData)
 				return newData
+			},
+			getNewFriendCount(){
+				let that = this
+				uni.getStorage({
+					key:'newFriendCount',
+					success:function(res){
+						that.newFriends = res.data
+					}
+				})
+			},
+			getFriendList(){
+				let that = this
+				uni.getStorage({
+					key: 'accountId',
+					success: function(res) {
+						if(that.currentTab === 0){
+							uni.request({
+								url: that.$baseUrl + '/users/contacts/getFriendList',
+								method: 'post',
+								data: {
+									account: res.data,
+								},
+								success: (data) => {
+									console.log(data.data.friendList)
+									that.friendList = that.fixTheSearchTeachers(that.filterFriendList(data.data.friendList))
+									that.indexList = that.friendList.map((item,index)=>item[0])
+									that.itemArr = that.friendList.map((item,index) => item.slice(1))
+									that.friednByGroup = data.data.friendByGroup
+									console.log(that.friednByGroup)
+								}
+							})
+						}
+					}
+				
+				})
 			}
 		
 		},
 		mounted() {
-			let that = this
-			uni.getStorage({
-				key: 'accountId',
-				success: function(res) {
-					if(that.currentTab === 0){
-						uni.request({
-							url: that.$baseUrl + '/users/contacts/getFriendList',
-							method: 'post',
-							data: {
-								account: res.data,
-							},
-							success: (data) => {
-								console.log(data.data.friendList)
-								that.friendList = that.fixTheSearchTeachers(that.filterFriendList(data.data.friendList))
-								that.indexList = that.friendList.map((item,index)=>item[0])
-								that.itemArr = that.friendList.map((item,index) => item.slice(1))
-								that.friednByGroup = data.data.friendByGroup
-								console.log(that.friednByGroup)
-							}
-						})
-					}
-				}
-			
-			})
+			this.getFriendList(),
+			this.getNewFriendCount()
 		}
 	}
 </script>
@@ -215,6 +229,7 @@
 	padding: 30rpx 20rpx;
 	margin: 20rpx 0;
 	background-color: #ffffff;
+	position: relative;
 }
 .friendsTab{
 	background-color: #ffffff;

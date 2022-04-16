@@ -21,8 +21,12 @@
 				<info-item v-if="userInfo.career" class="detailItem" label="职业" :content="userInfo.career" :showArrow="false"></info-item>
 			</view>
 		</view>
-		<view class="addFriendBtn">
+		<view class="addFriendBtn" v-if="!isFriend">
 			<button type="primary" @click="sendRequest">加为好友</button>
+		</view>
+		<view class="chatBtn" v-if="isFriend">
+			<button class="btn" type="primary" @click="sendRequest">音视频通话</button>
+			<button class="btn" type="primary" @click="sendMessage">发消息</button>
 		</view>
 	</view>
 </template>
@@ -32,7 +36,8 @@
 	export default{
 		data(){
 			return {
-				userInfo:{}
+				userInfo:{},
+				isFriend:false
 			}
 		},
 		components: {
@@ -54,9 +59,15 @@
 				uni.navigateTo({
 					url:`./sendRequest?friendId=${this.userInfo.tid}`
 				})
+			},
+			sendMessage(){
+				uni.navigateTo({
+					url:`/pages/chat/chatPage?friendId=${this.userInfo.tid}`
+				})
 			}
 		},
 		onLoad(option) {
+			this.isFriend = option.isFriend
 			uni.request({
 				url: this.$baseUrl + '/users/info',
 				method: 'post',
@@ -117,6 +128,19 @@
 		}
 		.addFriendBtn{
 			margin-bottom: 100rpx;
+		}
+		.chatBtn{
+			display: flex;
+			justify-content: space-around;
+			margin-bottom: 100rpx;
+			.btn{
+				flex: 1;
+				margin: 0 20rpx;
+			}
+			.btn:nth-child(1){
+				background-color:#eaedf4 ;
+				color: #000;
+			}
 		}
 	}
 	
