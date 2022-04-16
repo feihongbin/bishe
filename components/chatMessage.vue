@@ -7,9 +7,10 @@
 			
 			<view v-else :class="['chatText',item.type === 'myself' ? 'myselfChatContent' : '']">
 				<image class="avatar" src="../static/logo.png" mode=""></image>
-				<text :class="['content',item.type === 'myself' ? 'myContent' : '']">{{item.content}}</text>
+				<text v-if="item.tag === 'text'" :class="['content',item.type === 'myself' ? 'myContent' : '']">{{item.content}}</text>
 				<!-- <u-tooltip :text='<text :class="['content',item.type === 'myself' ? 'myContent' : '']'>{{item.content}}</text>"></u-tooltip> -->
 				<!-- <u-tooltip :text="item.content">{{item.content}}</u-tooltip> -->
+				<image class="contentImage" v-if="item.tag === 'image'" :src="item.content" mode="widthFix"></image>
 			</view>
 		</view>
 		
@@ -67,6 +68,10 @@
 		padding: 15rpx;
 		border-radius: 10rpx;
 		max-width: 60vw;
+	}
+	.contentImage{
+		max-width: 400rpx;
+		border-radius: 20rpx;
 	}
 }
 .myContent{

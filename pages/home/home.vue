@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="homeContainer">
+		<view class="homeContainer" v-if="currentPage === 'home'">
 			<u-overlay :show="show" @click="addFriends">
 				<view class="addScreen">
 					<view class="addItem">
@@ -23,10 +23,10 @@
 				<search></search>
 			</view>
 			<view class="messages" v-for="(messageItem,index) in messageList" :key="messageItem.key">
-				<message :id="messageItem.key" :name="messageItem.name" :time="messageItem.time"
-					:content="messageItem.content" :messageNumber="messageItem.messageNumber"></message>
+				<message :messageItem="messageItem"></message>
 			</view>
 		</view>
+		<contact v-if="currentPage==='contacts'"></contact>
 		<view class="bottomNav">
 			<view class="navItem" @click="changeNavItem(navItems[0])">
 				<uni-icons :type="navItems[0]" :color="navItems[0] === 'chatbubble-filled' ? '#3c91ff':''" size="30">
@@ -56,11 +56,13 @@
 	import Search from '../../components/search.vue'
 	import Message from '../../components/message.vue'
 	import Mine from '../../pages/mine/mine.vue'
+	import Contact from '../contacts/contacts.vue'
 	export default {
 		components: {
 			Search,
 			Message,
-			Mine
+			Mine,
+			Contact
 		},
 		filters: {
 			isNumberOverflow(num) {
@@ -73,33 +75,35 @@
 				notReadMessages: 123,
 				newFriends: 2,
 				show: false,
-				messageList: [{
-						key: 1,
-						name: '张三',
-						time: '2022-01-22',
-						content: '我是张三',
-						messageNumber: 20
-					},
-					{
-						key: 2,
-						name: '张三',
-						time: '2022-01-22',
-						content: '我是张三',
-						messageNumber: 200
-					},
-					{
-						key: 3,
-						name: '张三',
-						time: '2022-01-22',
-						content: '我是张三',
-						messageNumber: 99
-					}
-				],
+				// messageList: [{
+				// 		key: 1,
+				// 		name: '张三',
+				// 		time: '2022-01-22',
+				// 		content: '我是张三',
+				// 		messageNumber: 20
+				// 	},
+				// 	{
+				// 		key: 2,
+				// 		name: '张三',
+				// 		time: '2022-01-22',
+				// 		content: '我是张三',
+				// 		messageNumber: 200
+				// 	},
+				// 	{
+				// 		key: 3,
+				// 		name: '张三',
+				// 		time: '2022-01-22',
+				// 		content: '我是张三',
+				// 		messageNumber: 99
+				// 	}
+				// ],
+				messageList:[],
 				navMap: new Map([
 					['chatbubble', 'home'],
 					['staff', 'contacts'],
 					['person', 'mine']
-				])
+				]),
+				currentPage:'home'
 			};
 		},
 		methods: {
@@ -113,9 +117,10 @@
 							return item + '-filled'
 						} else return item
 					})
-					uni.navigateTo({
-						url: `../${this.navMap.get(str)}/${this.navMap.get(str)}`
-					})
+					// uni.navigateTo({
+					// 	url: `../${this.navMap.get(str)}/${this.navMap.get(str)}`
+					// })
+					this.currentPage = this.navMap.get(str)
 				}
 
 
@@ -123,7 +128,30 @@
 			addFriends() {
 				this.show = !this.show
 			},
+			getMessageList(){
+				let that = this
+				uni.getStorage({
+					key: 'accountId',
+					success: function(res) {
+						uni.request({
+							url: that.$baseUrl + '/users/home/messageList',
+							method: 'post',
+							data: {
+								account: res.data,
+							},
+							success: (data) => {
+								that.messageList = data.data.messageList
+								console.log(data.data.messageList)
+							}
+						})
+					}
+				
+				})
+			}
 			
+		},
+		onLoad() {
+			this.getMessageList()
 		}
 	
 	}

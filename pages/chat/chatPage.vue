@@ -14,7 +14,7 @@
 			</view>
 			<view v-if="isShowBlank" class="blankContent"></view>
 		</scroll-view>
-		<send-message-input @showBlank="showBlank"></send-message-input>
+		<send-message-input :friendId="friendId" @showBlank="showBlank"></send-message-input>
 	</view>
 </template>
 
@@ -29,119 +29,80 @@
 		data() {
 			return {
 				name:'',
+				friendId:'',
 				message:[
 					{
 						content:'昨天下午 6:31',
-						type:'time'
+						type:'time',
+						tag:'text'
 					},
+					
 					{
 						content:'你好啊',
-						type:'others'
-					},
-					{
-						content:'你也好啊',
-						type:'myself'
-					},
-					{
-						content:'很高兴认识你',
-						type:'myself'
-					},
-					{
-						content:'你高兴得太早了辉丰股份规范规范vn海军空军很快就回一条狗羽绒服他如果凤凰股份海景房机会改变看见过好久考我我还看炬华科技好了',
-						type:'others'
-					},
-					{
-						content:'昨天下午 6:31',
-						type:'time'
-					},
-					{
-						content:'你好啊',
-						type:'others'
+						type:'others',
+						tag:'text'
 					},
 					{
 						content:'你也好啊了快捷方式拉达克解放啦考试记录开始搭建拉开数据库拉法基埃里克森京东方拉克丝达拉斯会计分录卡设计费卢卡斯建档立卡世界来看的骄傲离开',
-						type:'myself'
+						type:'myself',
+						tag:'text'
 					},
 					{
-						content:'很高兴认识你',
-						type:'myself'
+						content:'https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/avatar/1.jpeg',
+						type:'myself',
+						tag:'image'
 					},
 					{
 						content:'你高兴得太早了',
-						type:'others'
+						type:'others',
+						tag:'text'
 					},
 					{
 						content:'昨天下午 6:31',
-						type:'time'
+						type:'time',
+						tag:'text'
 					},
 					{
 						content:'你好啊',
-						type:'others'
+						type:'others',
+						tag:'text'
 					},
 					{
 						content:'你也好啊',
-						type:'myself'
+						type:'myself',
+						tag:'text'
 					},
 					{
 						content:'很高兴认识你',
-						type:'myself'
+						type:'myself',
+						tag:'text'
 					},
-					{
-						content:'你高兴得太早了',
-						type:'others'
-					},
-					{
-						content:'昨天下午 6:31',
-						type:'time'
-					},
-					{
-						content:'你好啊',
-						type:'others'
-					},
-					{
-						content:'你也好啊',
-						type:'myself'
-					},
-					{
-						content:'很高兴认识你',
-						type:'myself'
-					},
-					{
-						content:'你高兴得太早了',
-						type:'others'
-					},
-					{
-						content:'昨天下午 6:31',
-						type:'time'
-					},
-					{
-						content:'你好啊',
-						type:'others'
-					},
-					{
-						content:'你也好啊',
-						type:'myself'
-					},
-					{
-						content:'很高兴认识你',
-						type:'myself'
-					},
-					{
-						content:'你高兴得太早了',
-						type:'others'
-					}
+					
+				
 				],
 				isShowBlank:false
 			};
 		},
 		onLoad:function(option){
 			this.name = option.name
+			this.friendId = option.id
 			console.log(this.name)
+			this.acceptMessage()
+			
 		},
 		methods:{
 			showBlank(val){
 				console.log(val)
 				this.isShowBlank = val
+			},
+			acceptMessage(){
+				this.socket.on('news',(data)=>{
+					// console.log('12345aszs')
+					this.message.push({
+						content:'你高兴得太早了',
+						type:'others'
+					})
+				})
 			}
 		}
 	}

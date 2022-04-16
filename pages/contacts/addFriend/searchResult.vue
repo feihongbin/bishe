@@ -52,7 +52,7 @@
 			},
 			sendRequest(){
 				uni.navigateTo({
-					url:'./sendRequest'
+					url:`./sendRequest?friendId=${this.userInfo.tid}`
 				})
 			}
 		},

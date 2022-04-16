@@ -19,21 +19,65 @@
 		name: "friendList",
 		data() {
 			return {
-				indexList: ["A", "B"],
-				itemArr: [
-					['列表A1', '列表A2', '列表A3'],
-					['列表B1', '列表B2', '列表B3'],
-			
-				]
+				// indexList: [],
+				// itemArr: [],
+				// names: []
 			};
+		},
+		props:{
+			indexList:Array,
+			itemArr:Array
+		},
+		methods: {
+			// fixTheSearchTeachers(names) {
+			// 	let data = names;
+			// 	let indexList = []
+			// 	let itemArr = []
+			// 	data.sort((a, b) => a.localeCompare(b, 'zh-Hans-CN', {
+			// 		sensitivity: 'accent'
+			// 	}));
+			// 	let compareStr = ["吧", "擦", "搭", "妸", "发", "旮", "哈", "击", "咖", "垃", "妈", "那", "噢", "葩", "妻", "燃", "仨", "它",
+			// 		"挖", "夕", "匝"
+			// 	];
+			// 	let UpperCode = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
+			// 		"T", "W", "X", "Z"
+			// 	];
+			// 	let temp = [],
+			// 		newData = [];
+			// 	for (let j = 0, i = 0; i < data.length;) {
+			// 		if (data[i].localeCompare(compareStr[j], 'zh-Hans-CN', {
+			// 				sensitivity: 'base'
+			// 			}) <= 0) {
+			// 			temp.push(data[i]);
+			// 			i++;
+			// 		} else if (temp.length > 0) {
+			// 			temp.unshift(UpperCode[j++]);
+			// 			newData.push(temp);
+			// 			temp = [];
+			// 		} else {
+			// 			j++;
+			// 		}
+			// 	}
+				
+			// 	return newData
+			// },
+		
+
+		},
+	
+		mounted() {
+			// console.log(this.indexList, this.itemArr)
+			// this.names = fixTheSearchTeachers(filterFriendList(this.friendList))
+			// console.log(this.names)
 		}
 	}
 </script>
 
 <style lang="scss">
-	.friendList{
+	.friendList {
 		padding-left: 20rpx;
 	}
+
 	.list-cell {
 		display: flex;
 		align-items: center;
@@ -45,7 +89,8 @@
 		font-size: 14px;
 		line-height: 24px;
 		background-color: #fff;
-		image{
+
+		image {
 			width: 80rpx;
 			height: 80rpx;
 			margin-right: 20rpx;
@@ -54,9 +99,10 @@
 	}
 </style>
 <style lang="scss" scoped>
-	.u-border-bottom{
-		border-bottom-width:0 !important;
+	.u-border-bottom {
+		border-bottom-width: 0 !important;
 	}
+
 	// .u-border-bottom{
 	// 	margin: 10rpx 0 !important;
 	// }

@@ -14,11 +14,11 @@
 		</view>
 		<view class="friendsTab">
 			<u-tabs :list="list" lineWidth="30" :activeStyle="{color:'#3c91ff'}" @click="tabClick"></u-tabs>
-			<friend-list v-if="currentTab === 0"></friend-list>
-			<group v-if="currentTab === 1"></group>
+			<friend-list :indexList="indexList" :itemArr="itemArr" v-if="currentTab === 0 && friendList.length > 0"></friend-list>
+			<group :list="friednByGroup" v-if="currentTab === 1"></group>
 			<group v-if="currentTab === 2"></group>
 		</view>
-		<view class="bottomNav">
+		<!-- <view class="bottomNav">
 			<view class="navItem" @click="changeNavItem(navItems[0])">
 				<uni-icons :type="navItems[0]" :color="navItems[0] === 'chatbubble-filled' ? '#3c91ff':''" size="30">
 				</uni-icons>
@@ -38,7 +38,7 @@
 				<text :class="{navName:true,clicked:navItems[2]==='person-filled'}">我的</text>
 			</view>
 		
-		</view>
+		</view> -->
 	</view>
 </template>
 
@@ -74,6 +74,10 @@
 				navItems: ['chatbubble-filled', 'staff', 'person'],
 				notReadMessages: 123,
 				newFriends: 2,
+				friendList:[],
+				indexList:[],
+				itemArr:[],
+				friednByGroup:[]
 			};
 		},
 		filters: {
@@ -87,31 +91,95 @@
 			},
 			toAddFriend(){
 				uni.navigateTo({
-					url:'./addFriend/addFriend'
+					url:'/pages/contacts/addFriend/addFriend'
 				})
 			},
-			changeNavItem(str) {
-				const reg = /-filled$/;
-				if (!reg.test(str)) {
-					this.navItems = this.navItems.map(item => {
-						if (reg.test(item)) {
-							return item.replace(reg, '')
-						} else if (item === str) {
-							return item + '-filled'
-						} else return item
-					})
-					uni.navigateTo({
-						url: `../${this.navMap.get(str)}/${this.navMap.get(str)}`
-					})
-				}
+			// changeNavItem(str) {
+			// 	const reg = /-filled$/;
+			// 	if (!reg.test(str)) {
+			// 		this.navItems = this.navItems.map(item => {
+			// 			if (reg.test(item)) {
+			// 				return item.replace(reg, '')
+			// 			} else if (item === str) {
+			// 				return item + '-filled'
+			// 			} else return item
+			// 		})
+			// 		uni.navigateTo({
+			// 			url: `../${this.navMap.get(str)}/${this.navMap.get(str)}`
+			// 		})
+			// 	}
 			
 			
-			},
+			// },
 			checkNewFriend(){
 				uni.navigateTo({
-					url:'./addFriend/newFriends'
+					url:'/pages/contacts/addFriend/newFriends'
 				})
+			},
+			filterFriendList(arr) {
+				return arr.map((item, index) => {
+					return item.note === '' ? item.name : item.note
+				})
+			},
+			fixTheSearchTeachers(names) {
+				let data = names;
+				let indexList = []
+				let itemArr = []
+				data.sort((a, b) => a.localeCompare(b, 'zh-Hans-CN', {
+					sensitivity: 'accent'
+				}));
+				let compareStr = ["吧", "擦", "搭", "妸", "发", "旮", "哈", "击", "咖", "垃", "妈", "那", "噢", "葩", "妻", "燃", "仨", "它",
+					"挖", "夕", "匝"
+				];
+				let UpperCode = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
+					"T", "W", "X", "Z"
+				];
+				let temp = [],
+					newData = [];
+				for (let j = 0, i = 0; i < data.length;) {
+					if (data[i].localeCompare(compareStr[j], 'zh-Hans-CN', {
+							sensitivity: 'base'
+						}) <= 0) {
+						temp.push(data[i]);
+						i++;
+					} else if (temp.length > 0) {
+						temp.unshift(UpperCode[j++]);
+						newData.push(temp);
+						temp = [];
+					} else {
+						j++;
+					}
+				}
+				console.log(newData)
+				return newData
 			}
+		
+		},
+		mounted() {
+			let that = this
+			uni.getStorage({
+				key: 'accountId',
+				success: function(res) {
+					if(that.currentTab === 0){
+						uni.request({
+							url: that.$baseUrl + '/users/contacts/getFriendList',
+							method: 'post',
+							data: {
+								account: res.data,
+							},
+							success: (data) => {
+								console.log(data.data.friendList)
+								that.friendList = that.fixTheSearchTeachers(that.filterFriendList(data.data.friendList))
+								that.indexList = that.friendList.map((item,index)=>item[0])
+								that.itemArr = that.friendList.map((item,index) => item.slice(1))
+								that.friednByGroup = data.data.friendByGroup
+								console.log(that.friednByGroup)
+							}
+						})
+					}
+				}
+			
+			})
 		}
 	}
 </script>

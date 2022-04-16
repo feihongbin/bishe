@@ -1,7 +1,7 @@
 <template>
 	<scroll-view class="emoji" scroll-y="true">
 		<view class="emojiList" v-for="(item,index) in emojiList" :key="index" >
-			<view class="emojiItem" v-for="(emoji,i) in item">
+			<view class="emojiItem" v-for="(emoji,i) in item" @click="toInput(emoji)">
 				{{emoji}}
 			</view>
 		</view>
@@ -29,6 +29,11 @@
 				]
 			}
 		},
+		methods:{
+			toInput(str){
+				this.$emit('addEmoji',str)
+			}
+		}
 		
 	}
 </script>

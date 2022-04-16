@@ -5,7 +5,7 @@
 			<view class="chatFriendInfo">
 				<text class="friendName">添加好友</text>
 			</view>
-			<text>发送</text>
+			<text @click="sendRequst">发送</text>
 		</view>
 		<view class="friendInfo">
 			<image src="../../../static/logo.png" mode=""></image>
@@ -16,19 +16,19 @@
 		</view>
 		<view class="verify">
 			<view class="verifyTitle">填写验证信息</view>
-			<textarea value="" placeholder="" />
+			<textarea v-model="message" placeholder="" />
 		</view>
 		<view class="groupAndNote">
 			<view class="groupAndNoteTitle">设置备注和分组</view>
 			<view class="note">
-				<text>备注</text>
+				<text v-model="note">备注</text>
 				<input class="noteCell" type="text" value="" />
 			</view>
 			<u-divider></u-divider>
 			<view class="group">
 				<text>分组</text>
 				<view class="groupCell">
-					<text>宇宙之大</text>
+					<text v-model="group"></text>
 					<u-icon name="arrow-right" size="16" style="margin-right: 10px;"></u-icon>
 				</view>
 			</view>
@@ -39,14 +39,44 @@
 <script>
 	export default{
 		data(){
-			return {}
+			return {
+				friendId:'',
+				message:'',
+				group:'宇宙之大',
+				note:'备注'
+			}
 		},
 		methods:{
 			back(){
 				uni.navigateBack({
 					delta:1
 				})
+			},
+			sendRequst(){
+				let that = this
+				uni.getStorage({
+					key: 'accountId',
+					success: function(res) {
+						uni.request({
+							url: that.$baseUrl + `/users/addFriend/sendRequest`,
+							method: 'post',
+							data: {
+								account: res.data,
+								friendId: that.friendId,
+								message: that.message,
+								group:that.group,
+								note:that.note
+							},
+							success: (data) => {
+								console.log('发送成功',data)
+							}
+						})
+					}
+				})
 			}
+		},
+		onLoad(options) {
+			this.friendId = options.friendId
 		}
 	}
 </script>

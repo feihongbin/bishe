@@ -1,25 +1,26 @@
 <template>
 	<view>
 		<u-collapse accordion :border="false">
-			<u-collapse-item>
+			<u-collapse-item v-for="(item,index) in list">
 				<!-- <u-icon name="play-right-fill" size="20" slot="icon"></u-icon> -->
 				<text slot="right-icon">
 					<u-icon name="arrow-up-fill" size="16" color="#cfcfcf"></u-icon>
 				</text>
 				<text slot="title">
 					<view class="groupTitle">
-						<text>特别关注</text>
+						<text>{{item[0]}}</text>
 						<text>2/10</text>
 					</view>
 				</text>
 				<text class="u-collapse-content">
-					<view class="friend" v-for="(item,index) in friendsList">
-						<image class="friendAvatar" src="../static/logo.png" mode=""></image>
-						<text class="friendName">{{item}}</text>
+					<view class="friend" v-for="(friend,i) in item.slice(1)" @click="toDetail(friend.friendId)">
+						<image class="friendAvatar" :src="friend.avatar" mode=""></image>
+						<text class="friendName">{{friend.note || friend.name}}</text>
 					</view>
 				</text>
 			
 			</u-collapse-item>
+			
 		</u-collapse>
 	</view>
 </template>
@@ -29,9 +30,20 @@
 		name: "group",
 		data() {
 			return {
-				friendsList:['张三','李四','王五','朱六']
 			};
+		},
+		props:{
+			list:Array
+		},
+		methods:{
+			toDetail(str){
+				console.log(str,111)
+				uni.navigateTo({
+					url:`../pages/contacts/addFriend/searchResult?id=${str}`
+				})
+			}
 		}
+
 	}
 </script>
 

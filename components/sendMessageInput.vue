@@ -5,15 +5,19 @@
 			<u-icon :name="voiceUrl" size="30" @click="changeInput('speaking')"></u-icon>
 		</view>
 
-		<textarea auto-height="true" cursor-spacing="30" class="contentInput" value="" @focus="focusInput" />
+		<textarea auto-height="true" cursor-spacing="30" class="contentInput" v-model="inputContent" @focus="focusInput" />
 		<view class="submitIcon">
 			<u-icon :name="smileUrl" size="30" @click="changeInput('emoji')"></u-icon>
 		</view>
-		<view class="submitIcon">
-			<u-icon :name="plusUrl" size="30" :color="!isPlus ? '#000' : '#1a74fa'" @click="changeInput('plus')">
+		<view class="submitIcon" v-if="inputContent.length <= 0">
+			<u-icon :name="plusUrl"  size="30" :color="!isPlus ? '#000' : '#1a74fa'" @click="changeInput('plus')">
 			</u-icon>
+			
 		</view>
-		<emoji v-if="isEmoji" class="emojiBox" ref="emojiBox"></emoji>
+		<view v-else class="submitBtn">
+			<button  type="primary" size="mini" @click="send" >发送</button>
+		</view>
+		<emoji v-if="isEmoji" class="emojiBox" ref="emojiBox" @addEmoji="addEmoji"></emoji>
 		<speak v-if="isSpeaking" class="speakBox"></speak>
 		<more v-if="isPlus" class="moreBox"></more>
 	</view>
@@ -31,8 +35,11 @@
 				isEmoji: false,
 				isPlus: false,
 				isSending: false,
-
+				inputContent:''
 			};
+		},
+		props:{
+			friendId:String
 		},
 		components: {
 			Emoji,
@@ -51,6 +58,12 @@
 			plusUrl() {
 				return this.isPlus ? 'plus-circle-fill' : 'plus-circle'
 			}
+		},
+		onLoad() {
+			// this.acceptMessage()
+			// this.socket.on('news',(data)=>{
+			// 	console.log('12345aszs')
+			// })
 		},
 		methods: {
 			changeInput(val) {
@@ -135,11 +148,45 @@
 				this.isEmoji = false
 				console.log(123)
 
-			}
+			},
+			addEmoji(val){
+				this.inputContent += val
+			},
+			send(){
+				let that = this
+				uni.getStorage({
+					key: 'accountId',
+					success: function(res) {
+						// uni.request({
+						// 	url: that.$baseUrl + '/users/info/setGender',
+						// 	method: 'post',
+						// 	data: {
+						// 		account: res.data,
+						// 		gender: e.value[0]
+						// 	},
+						// 	success: (data) => {
+						// 		that.getUserInfo()
+						// 	}
+						// })
+						let obj = {
+							content:that.inputContent,
+							friendId:that.friendId,
+							account:res.data
+						}
+						that.socket.emit('message',obj)
+					}
+				})
+				
+				
+			},
+			
 
 		},
+		
+		
 		// onLoad() {
-		// 	uni.onKeyboardHeightChange(res => {})
+		// 	// uni.onKeyboardHeightChange(res => {})
+		// 	uni.$on('addEmoji',this.addEmoji(data.val))
 		// }
 
 	}
@@ -166,6 +213,7 @@
 			caret-color: #1e6eff;
 			max-height: 200rpx;
 			overflow-y: scroll;
+			flex: 1;
 		}
 
 		.submitIcon {
@@ -179,5 +227,15 @@
 		bottom: -278px;
 		z-index: 888;
 		background: #fff;
+	}
+	.submitBtn{
+		// // display: inline;
+		// width: 100rpx;
+		// height: 50rpx;
+		// margin: 10rpx;
+		// padding: 30rpx;
+		// display: flex;
+		// align-items: center;
+		padding-bottom: 5rpx;
 	}
 </style>

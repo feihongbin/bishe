@@ -3,17 +3,19 @@
 		<u-swipe-action>
 			<u-swipe-action-item :options="options">
 				<view class="messageContainer">
-					<image class="avatar" src="../static/logo.png" mode="aspectFit"></image>
+					<image class="avatar" :src="messageItem.avatar" mode="aspectFit"></image>
 					<view class="messageContent" @click="toMessageDetail">
 						<view class="nameAndTime">
-							<text>{{name}}</text>
-							<text>{{time}}</text>
+							<text>{{messageItem.sender}}</text>
+							<!-- <text>{{messageItem.lastDate}}</text> -->
+							<uni-dateformat :date="Number(messageItem.lastDate)" :threshold="[60000,3600000 * 24 * 7]" format="yyyy/mm/dd"></uni-dateformat>
 						</view>
 						<view class="content">
-							{{content}}
+							{{messageItem.lastContent}}
 						</view>
-						<text class="messageNumber" v-if="messageNumber>0">
-							{{messageNumber | isNumberOverflow}}
+						<text class="messageNumber" v-if="messageItem.notRead>0">
+							{{messageItem.notRead | isNumberOverflow}}
+							
 						</text>
 					</view>
 				</view>
@@ -55,21 +57,7 @@
 	export default {
 		name: "message",
 		props: {
-			name: {
-				type: String
-			},
-			time: {
-				type: String
-			},
-			content: {
-				type: String
-			},
-			messageNumber: {
-				type: Number
-			},
-			id: {
-				type: Number
-			}
+			messageItem:{}
 		},
 		filters: {
 			isNumberOverflow(num) {
@@ -82,19 +70,19 @@
 					text: '置顶',
 					style: {
 						backgroundColor: '#c9c8ce',
-						width:'80rpx'
+						width:'140rpx'
 					}
 				}, {
 					text: '标为未读',
 					style: {
 						backgroundColor: '#fb9c00',
-						width:'160rpx'
+						width:'140rpx'
 					}
 				},{
 					text: '删除',
 					style: {
 						backgroundColor: '#ff3a32',
-						width:'80rpx'
+						width:'140rpx'
 					}
 				}]
 			};
@@ -102,7 +90,7 @@
 		methods: {
 			toMessageDetail() {
 				uni.navigateTo({
-					url: `/pages/chat/chatPage?name=${this.name}`
+					url: `/pages/chat/chatPage?name=${this.messageItem.sender}&id=${this.messageItem.friendId}`
 				})
 				console.log(this.id)
 			}
