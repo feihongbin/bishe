@@ -119,10 +119,13 @@
 							return item + '-filled'
 						} else return item
 					})
-					// uni.navigateTo({
-					// 	url: `../${this.navMap.get(str)}/${this.navMap.get(str)}`
-					// })
+					
 					this.currentPage = this.navMap.get(str)
+					if(this.currentPage === 'mine'){
+						uni.navigateTo({
+							url: `../${this.navMap.get(str)}/${this.navMap.get(str)}`
+						})
+					}
 				}
 
 
@@ -206,6 +209,12 @@
 			this.getMessageList(),
 			this.watchNewFriend(),
 			this.getNewFriendCount()
+			uni.getStorage({
+				key:'accountId',
+				success(res) {
+					console.log(res.data)
+				}
+			})
 		},
 		onBackPress() {
 			

@@ -6,7 +6,7 @@
 			</view>
 			
 			<view v-else :class="['chatText',item.type === 'myself' ? 'myselfChatContent' : '']">
-				<image class="avatar" src="../static/logo.png" mode=""></image>
+				<image class="avatar" :src="avatar" mode=""></image>
 				<text v-if="item.tag === 'text'" :class="['content',item.type === 'myself' ? 'myContent' : '']">{{item.content}}</text>
 				<!-- <u-tooltip :text='<text :class="['content',item.type === 'myself' ? 'myContent' : '']'>{{item.content}}</text>"></u-tooltip> -->
 				<!-- <u-tooltip :text="item.content">{{item.content}}</u-tooltip> -->
@@ -26,7 +26,8 @@
 				default(){
 					return [];
 				}
-			}
+			},
+			avatar:String
 		},
 		data() {
 			return {

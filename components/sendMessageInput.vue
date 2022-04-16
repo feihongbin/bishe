@@ -173,7 +173,7 @@
 							friendId:that.friendId,
 							account:res.data
 						}
-						that.socket.emit('message',obj)
+						that.socket.emit('singleMessage',obj)
 					}
 				})
 				

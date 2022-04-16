@@ -42,7 +42,7 @@
 								uni.setStorage({
 									key: 'accountId',
 									data: data.data.account,
-									success: function () {
+									success: function (res) {
 										uni.navigateTo({
 											url:`../home/home`
 										})

@@ -88,6 +88,12 @@
 		},
 		onLoad(options) {
 			this.friendId = options.friendId
+			uni.getStorage({
+				key:'accountId',
+				success(res) {
+					console.log(res.data)
+				}
+			})
 		}
 	}
 </script>
