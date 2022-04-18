@@ -1,7 +1,7 @@
 <template>
 	<view class="more">
 		<view class="moreList">
-			<view class="moreItem"><u-icon name="https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/svg/photo.png" size="42"></u-icon><text>图片</text></view>
+			<view class="moreItem"><u-icon name="https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/svg/photo.png" size="42" @click="chooseImg()"></u-icon><text>图片</text></view>
 			<view class="moreItem"><u-icon name="https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/svg/camera.png" size="42"></u-icon><text>拍摄</text></view>
 			<view class="moreItem"><u-icon name="https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/svg/phone.png" size="42"></u-icon><text>语音通话</text></view>
 			<view class="moreItem"><u-icon name="https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/svg/vedio.png" size="42"></u-icon><text>视频通话</text></view>
@@ -16,6 +16,18 @@
 	export default{
 		data(){
 			return {}
+		},
+		methods:{
+			chooseImg(){
+				uni.chooseImage({
+					count: 6, //默认9
+					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+					sourceType: ['album'], //从相册选择
+					success: function (res) {
+						console.log(JSON.stringify(res.tempFilePaths));
+					}
+				});
+			}
 		}
 	}
 </script>

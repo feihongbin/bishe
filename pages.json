@@ -38,6 +38,17 @@
             }
             
         }
+		,{
+		    "path" : "pages/chat/chatSetting",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "聊天设置",
+		        "enablePullDownRefresh": false
+				// "navigationStyle":"custom",
+				// "softinputMode":"adjustResize"
+		    }
+		    
+		}
         ,{
             "path" : "pages/findPsw/index",
             "style" :                                                                                    

@@ -90,10 +90,12 @@
 		methods: {
 			toMessageDetail() {
 				uni.navigateTo({
-					url: `/pages/chat/chatPage?name=${this.messageItem.sender}&id=${this.messageItem.friendId}`
+					url: `/pages/chat/chatPage?name=${this.messageItem.sender}&friendId=${this.messageItem.friendId}`
 				})
-				console.log(this.id)
 			}
+		},
+		mounted() {
+			console.log(this.messageItem)
 		}
 	}
 </script>

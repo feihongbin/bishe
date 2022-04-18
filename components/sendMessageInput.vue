@@ -174,6 +174,7 @@
 							account:res.data
 						}
 						that.socket.emit('singleMessage',obj)
+						that.inputContent = ''
 					}
 				})
 				

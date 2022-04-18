@@ -160,6 +160,7 @@
 					uni.getStorage({
 						key: 'accountId',
 						success: function(res) {
+							
 							if(data.friendId === res.data){
 								console.log('zxasd')
 								// uni.getStorage({
@@ -209,13 +210,21 @@
 			this.getMessageList(),
 			this.watchNewFriend(),
 			this.getNewFriendCount()
-			uni.getStorage({
-				key:'accountId',
-				success(res) {
-					console.log(res.data)
-				}
+			
+			this.socket.on('toUpdateMessageList',(data)=>{
+				this.getMessageList()
+				// let that = this
+				// uni.getStorage({
+				// 	key:'accountId',
+				// 	success(res) {
+				// 		if(data.account === res.data || data.friendId === res.data){
+				// 			that.getMessageList()
+				// 		}
+				// 	}
+				// })
 			})
 		},
+		
 		onBackPress() {
 			
 		}

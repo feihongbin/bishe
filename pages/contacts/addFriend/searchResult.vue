@@ -2,6 +2,7 @@
 	<view class="mineContainer">
 		<view>
 			<uni-icons type="back" size="24"></uni-icons>
+			<text class="setting" @click="toFriendSetting" v-if="isFriend">设置</text>
 			<view class="info">
 				<image class="avatar" :src="userInfo.avatar" mode=""></image>
 				<view>
@@ -64,6 +65,11 @@
 				uni.navigateTo({
 					url:`/pages/chat/chatPage?friendId=${this.userInfo.tid}`
 				})
+			},
+			toFriendSetting(){
+				uni.navigateTo({
+					url:'/pages/chat/chatSetting'
+				})
 			}
 		},
 		onLoad(option) {
@@ -93,6 +99,13 @@
 		flex-direction: column;
 		justify-content: space-between;
 		box-sizing: border;
+		position: relative;
+		.setting{
+			position: absolute;
+			top: 80rpx;
+			right: 40rpx;
+			font-size: 36rpx;
+		}
 		.info {
 			display: flex;
 			align-items: center;

@@ -6,7 +6,7 @@
 				<text class="friendName">{{friendMessage.note || friendMessage.name}}</text>
 				<text class="friendStatus">在线</text>
 			</view>
-			<uni-icons type="bars" size="24"></uni-icons>
+			<uni-icons type="bars" size="24" @click="toFriendDetail"></uni-icons>
 		</view>
 		<scroll-view class="chatContent" scroll-y="true" scroll-with-animation="true">
 			<view class="">
@@ -49,7 +49,7 @@
 				],
 				isShowBlank: false,
 				friendMessage: {},
-				account:''
+				account: ''
 			};
 		},
 		onLoad: function(option) {
@@ -58,22 +58,19 @@
 			this.acceptMessage()
 			this.getFriendInfo()
 			this.getAccount()
-			
+
 
 		},
 		methods: {
 			showBlank(val) {
-				console.log(val)
 				this.isShowBlank = val
 			},
-			getAccount(){
+			getAccount() {
 				let that = this
 				uni.getStorage({
-					key:'accountId',
-					success:function(res){
+					key: 'accountId',
+					success: function(res) {
 						that.account = res.data
-						console.log(res.data)
-						console.log(that.account )
 					}
 				})
 			},
@@ -90,9 +87,27 @@
 								friendId: that.friendId
 							},
 							success: (data) => {
-								console.log(data)
+								console.log('friendInfo',data)
 								that.friendMessage = data.data.friendMessage[0]
 							}
+						})
+					}
+				})
+			},
+			toFriendDetail() {
+				uni.navigateTo({
+					url: `/pages/contacts/addFriend/searchResult?id=${this.friendId}&isFriend=true`
+				})
+			},
+			saveHomeMessageList(obj){
+				uni.request({
+					url: this.$baseUrl + '/users/chat/saveHomeMessageList',
+					method: 'post',
+					data:obj,
+					success: (data) => {
+						this.socket.emit('updateMessageList',{
+							account:this.account,
+							friendId:this.friendId
 						})
 					}
 				})
@@ -100,15 +115,100 @@
 			acceptMessage() {
 
 				this.socket.on('news', (data) => {
-					
-					this.friendMessage.messages.push({
-						content: data.content,
-						type: this.account === data.account ? 'myself' : 'others',
-						tag: 'text'
+					console.log('accc',this.account,data.account,'friendIDdd',this.friendId,data.friendId)
+					console.log('if',data.account === this.account && data.friendId === this.friendId)
+					if(data.account === this.account && data.friendId === this.friendId || data.account === this.friendId && data.friendId === this.account){
+						let timeDiff = this.friendMessage.messages?.length > 0 ? Date.now() - this.friendMessage
+								.messages[this.friendMessage.messages.length - 1].time : 999999999999999
+							if (timeDiff > 1000 * 60 * 3) {
+						
+								this.friendMessage.messages.push({
+									mid: this.account + Date.now(),
+									content: Date.now(),
+									type: 'time',
+									tag: 'text',
+									time: Date.now(),
+									isRead: 2
+								})
+								uni.request({
+									url: this.$baseUrl + '/users/chat/sendMessage',
+									method: 'post',
+									data: {
+										account: this.account,
+										friendId: this.friendId,
+										message: {
+											mid: this.account + Date.now(),
+											content: Date.now(),
+											type: 'time',
+											tag: 'text',
+											time: Date.now(),
+											isRead: 2
+										}
+									},
+									success: (data) => {
+										// that.getUserInfo()
+									}
+								})
+							}
+						
+							this.friendMessage.messages.push({
+								mid: this.account + Date.now(),
+								content: data.content,
+								type: this.account === data.account ? 'myself' : 'others',
+								tag: 'text',
+								time: Date.now(),
+								isRead: 0
+							})
+							uni.request({
+								url: this.$baseUrl + '/users/chat/sendMessage',
+								method: 'post',
+								data: {
+									account: this.account,
+									friendId: this.friendId,
+									message: {
+										mid: this.account + Date.now(),
+										content: data.content,
+										type: this.account === data.account ? 'myself' : 'others',
+										tag: 'text',
+										time: Date.now(),
+										isRead: 0
+									}
+								},
+								success: (data) => {
+									// that.getUserInfo()
+								}
+							})
+							console.log(this.firendMessage)
+							this.saveHomeMessageList({
+								account:this.account,
+								sender:this.friendMessage.note || this.friendMessage.name,
+								friendId:this.friendMessage.friendId,
+								lastDate:Date.now(),
+								isShow:true,
+								lastContent:data.content,
+								notRead:9,
+								isGroup:false,
+								isTop:false,
+								groupName:'',
+								isRemind:true,
+								avatar:this.friendMessage.avatar
+							})
+							this.saveHomeMessageList({
+								account:this.friendMessage.friendId,
+								sender:this.friendMessage.note || this.friendMessage.name,
+								friendId:this.account,
+								lastDate:Date.now(),
+								isShow:true,
+								lastContent:data.content,
+								notRead:9,
+								isGroup:false,
+								isTop:false,
+								groupName:'',
+								isRemind:true,
+								avatar:this.friendMessage.avatar
+							})
+						}
 					})
-					console.log(data)
-					console.log('ac:',data.account,'acc:',this.account,this.friendMessage.messages)
-				})
 			}
 		}
 	}
