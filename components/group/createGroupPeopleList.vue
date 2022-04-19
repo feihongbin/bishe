@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<u-collapse accordion :border="false">
+		<u-collapse  :border="false">
 			<u-collapse-item v-for="(item,index) in list">
 				<!-- <u-icon name="play-right-fill" size="20" slot="icon"></u-icon> -->
 				<text slot="right-icon">
@@ -9,19 +9,14 @@
 				<text slot="title">
 					<view class="groupTitle">
 						<text>{{item[0]}}</text>
-						<text>{{item.length - 1}}</text>
+						<text>2/10</text>
 					</view>
 				</text>
-				<text class="u-collapse-content" v-if="currentTab===1">
-					<view class="friend" v-for="(friend,i) in item.slice(1)" @click="toFriendDetail(friend.friendId)">
+				<text class="u-collapse-content">
+					<view class="friend" v-for="(friend,i) in item.slice(1)" @click="checkItem(friend)">
+						<u-icon  size="32" :name="friend.isChecked ? 'https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/svg/circle-fill.png' : 'https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/svg/circle.png'"></u-icon>
 						<image class="friendAvatar" :src="friend.avatar" mode=""></image>
 						<text class="friendName">{{friend.note || friend.name}}</text>
-					</view>
-				</text>
-				<text class="u-collapse-content" v-if="currentTab===2">
-					<view class="friend" v-for="(group,i) in item.slice(1)" @click="toGroupDetail(group.group,group.groupName)">
-						<image class="friendAvatar" :src="group.groupAvatar" mode=""></image>
-						<text class="friendName">{{group.groupName}}</text>
 					</view>
 				</text>
 			
@@ -36,25 +31,31 @@
 		name: "group",
 		data() {
 			return {
+				checkedList:[]
 			};
 		},
 		props:{
-			list:Array,
-			currentTab:Number
+			list:Array
 		},
 		methods:{
-			toFriendDetail(str){
-				uni.navigateTo({
-					url:`/pages/contacts/addFriend/searchResult?id=${str}&isFriend=${true}`
-				})
-			},
-			toGroupDetail(id,name){
-				console.log('totototo')
-				uni.navigateTo({
-					url:`/pages/chat/groupChatPage?groupId=${id}&groupName=${name}`
-					// url:'../pages/chat/groupChatPage?groupId=${id}&groupName=${name}'
-				})
+			checkItem(item){
+				item.isChecked = !item.isChecked
+				if(item.isChecked){
+					this.checkedList.push(item)
+				}else{
+					let index = this.checkedList.findIndex((i) =>{
+						return i.friendId === item.friendId
+					})
+					console.log(index)
+					if(index){
+						this.checkedList.splice(index,1)
+					}
+				}
+				console.log(this.checkedList)
 			}
+		},
+		mounted() {
+			console.log(this.list)
 		}
 
 	}
@@ -82,6 +83,7 @@
 			width: 80rpx;
 			height: 80rpx;
 			margin-right: 20rpx;
+			margin-left: 20rpx;
 			border-radius: 20rpx;
 		}
 		.friendName{

@@ -3,11 +3,11 @@
 		<view class="homeContainer" v-if="currentPage === 'home'">
 			<u-overlay :show="show" @click="addFriends">
 				<view class="addScreen">
-					<view class="addItem">
+					<view class="addItem" @click="toCreateGroup">
 						<uni-icons class="icon" type="paperplane-filled" size="28"></uni-icons>
 						<text>创建群聊</text>
 					</view>
-					<view class="addItem">
+					<view class="addItem" @click="toAddFriend">
 						<uni-icons class="icon" type="personadd-filled" size="28"></uni-icons>
 						<text>添加好友</text>
 					</view>
@@ -48,7 +48,6 @@
 			</view>
 
 		</view>
-		<!-- <u-modal :show="modalShow" content=''></u-modal> -->
 	</view>
 
 </template>
@@ -76,36 +75,14 @@
 				notReadMessages: 123,
 				newFriends: 0,
 				show: false,
-				// modalShow:false,
-				// messageList: [{
-				// 		key: 1,
-				// 		name: '张三',
-				// 		time: '2022-01-22',
-				// 		content: '我是张三',
-				// 		messageNumber: 20
-				// 	},
-				// 	{
-				// 		key: 2,
-				// 		name: '张三',
-				// 		time: '2022-01-22',
-				// 		content: '我是张三',
-				// 		messageNumber: 200
-				// 	},
-				// 	{
-				// 		key: 3,
-				// 		name: '张三',
-				// 		time: '2022-01-22',
-				// 		content: '我是张三',
-				// 		messageNumber: 99
-				// 	}
-				// ],
 				messageList:[],
 				navMap: new Map([
 					['chatbubble', 'home'],
 					['staff', 'contacts'],
 					['person', 'mine']
 				]),
-				currentPage:'home'
+				currentPage:'home',
+				account:''
 			};
 		},
 		methods: {
@@ -138,6 +115,7 @@
 				uni.getStorage({
 					key: 'accountId',
 					success: function(res) {
+						that.account = res.data
 						uni.request({
 							url: that.$baseUrl + '/users/home/messageList',
 							method: 'post',
@@ -203,6 +181,16 @@
 				
 				})
 				
+			},
+			toCreateGroup(){
+				uni.navigateTo({
+					url:`../group/createGroup/createGroup?account=${this.account}`
+				})
+			},
+			toAddFriend(){
+				uni.navigateTo({
+					url:'../contacts/addFriend/addFriend'
+				})
 			}
 			
 		},

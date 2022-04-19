@@ -39,6 +39,17 @@
             
         }
 		,{
+		    "path" : "pages/chat/groupChatPage",
+		    "style" :                                                                                    
+		    {
+		        // "navigationBarTitleText": "",
+		        // "enablePullDownRefresh": false
+				"navigationStyle":"custom",
+				"softinputMode":"adjustResize"
+		    }
+		    
+		}
+		,{
 		    "path" : "pages/chat/chatSetting",
 		    "style" :                                                                                    
 		    {
@@ -225,6 +236,41 @@
 		    }
 		    
 		}
+        ,{
+            "path" : "pages/group/group",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+		,{
+		    "path" : "pages/group/groupSetting",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "群聊设置",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},{
+		    "path" : "pages/group/groupIntroduce",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "群聊资料",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+        ,{
+            "path" : "pages/group/createGroup/createGroup",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "创建群聊",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -16,30 +16,10 @@
 		<view class="friendsTab">
 			<u-tabs :list="list" lineWidth="30" :activeStyle="{color:'#3c91ff'}" @click="tabClick"></u-tabs>
 			<friend-list :indexList="indexList" :itemArr="itemArr" v-if="currentTab === 0 && friendList.length > 0"></friend-list>
-			<group :list="friednByGroup" v-if="currentTab === 1"></group>
-			<group v-if="currentTab === 2"></group>
+			<group :list="friendByGroup" :currentTab="currentTab" v-if="currentTab === 1"></group>
+			<group :list="groupByGroup" :currentTab="currentTab" v-if="currentTab === 2"></group>
 		</view>
-		<!-- <view class="bottomNav">
-			<view class="navItem" @click="changeNavItem(navItems[0])">
-				<uni-icons :type="navItems[0]" :color="navItems[0] === 'chatbubble-filled' ? '#3c91ff':''" size="30">
-				</uni-icons>
-				<text :class="{navName:true,clicked:navItems[0]==='chatbubble-filled'}">消息</text>
-				<text class="notReadmessageCounts"
-					v-if="notReadMessages>0">{{notReadMessages | isNumberOverflow}}</text>
-			</view>
-			<view class="navItem" @click="changeNavItem(navItems[1])">
-				<uni-icons :type="navItems[1]" :color="navItems[1] === 'staff-filled' ? '#3c91ff':''" size="30">
-				</uni-icons>
-				<text :class="{navName:true,clicked:navItems[1]==='staff-filled'}">联系人</text>
-				<text class="newFriends" v-if="newFriends>0">{{newFriends | isNumberOverflow}}</text>
-			</view>
-			<view class="navItem" @click="changeNavItem(navItems[2])">
-				<uni-icons :type="navItems[2]" :color="navItems[2] === 'person-filled' ? '#3c91ff':''" size="30">
-				</uni-icons>
-				<text :class="{navName:true,clicked:navItems[2]==='person-filled'}">我的</text>
-			</view>
-		
-		</view> -->
+
 	</view>
 </template>
 
@@ -78,7 +58,9 @@
 				friendList:[],
 				indexList:[],
 				itemArr:[],
-				friednByGroup:[]
+				friendByGroup:[],
+				groupByGroup:[],
+				account:''
 			};
 		},
 		filters: {
@@ -95,23 +77,9 @@
 					url:'/pages/contacts/addFriend/addFriend'
 				})
 			},
-			// changeNavItem(str) {
-			// 	const reg = /-filled$/;
-			// 	if (!reg.test(str)) {
-			// 		this.navItems = this.navItems.map(item => {
-			// 			if (reg.test(item)) {
-			// 				return item.replace(reg, '')
-			// 			} else if (item === str) {
-			// 				return item + '-filled'
-			// 			} else return item
-			// 		})
-			// 		uni.navigateTo({
-			// 			url: `../${this.navMap.get(str)}/${this.navMap.get(str)}`
-			// 		})
-			// 	}
+		
 			
 			
-			// },
 			checkNewFriend(){
 				uni.navigateTo({
 					url:'/pages/contacts/addFriend/newFriends'
@@ -151,7 +119,6 @@
 						j++;
 					}
 				}
-				console.log(newData)
 				return newData
 			},
 			getNewFriendCount(){
@@ -168,6 +135,7 @@
 				uni.getStorage({
 					key: 'accountId',
 					success: function(res) {
+						that.account = res.data
 						if(that.currentTab === 0){
 							uni.request({
 								url: that.$baseUrl + '/users/contacts/getFriendList',
@@ -176,24 +144,50 @@
 									account: res.data,
 								},
 								success: (data) => {
-									console.log(data.data.friendList)
 									that.friendList = that.fixTheSearchTeachers(that.filterFriendList(data.data.friendList))
 									that.indexList = that.friendList.map((item,index)=>item[0])
 									that.itemArr = that.friendList.map((item,index) => item.slice(1))
-									that.friednByGroup = data.data.friendByGroup
-									console.log(that.friednByGroup)
+									that.friendByGroup = data.data.friendByGroup
+									console.log(data.data.friendByGroup)
 								}
 							})
 						}
 					}
 				
 				})
-			}
+			},
+			getGroupList(){
+				let that = this
+				uni.getStorage({
+					key: 'accountId',
+					success: function(res) {
+						that.account = res.data
+						if(that.currentTab === 0){
+							uni.request({
+								url: that.$baseUrl + '/users/contacts/getGroupList',
+								method: 'post',
+								data: {
+									account: res.data,
+								},
+								success: (data) => {
+									
+									that.groupByGroup = data.data.groupByGroup
+									console.log(data.data.groupByGroup)
+								}
+							})
+						}
+					}
+				
+				})
+			},
+	
 		
 		},
 		mounted() {
 			this.getFriendList(),
-			this.getNewFriendCount()
+			this.getNewFriendCount(),
+			this.getGroupList()
+
 		}
 	}
 </script>
