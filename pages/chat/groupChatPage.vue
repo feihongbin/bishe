@@ -10,55 +10,63 @@
 		</view>
 		<scroll-view class="chatContent" scroll-y="true" scroll-with-animation="true">
 			<view class="">
-				<chat-message :avatar="friendMessage.avatar" :messageList="friendMessage.messages"></chat-message>
+				<group-chat-message :account="account" :messageList="groupMessage"></group-chat-message>
 			</view>
 			<view v-if="isShowBlank" class="blankContent"></view>
 		</scroll-view>
-		<!-- <send-message-input :friendId="friendId" @showBlank="showBlank"></send-message-input> -->
+		<group-submit :groupId="groupId" @showBlank="showBlank"></group-submit>
 	</view>
 </template>
 
 <script>
-	import ChatMessage from '../../components/chatMessage.vue'
-	import SendMessageInput from '../../components/sendMessageInput.vue'
+	import GroupChatMessage from '../../components/group/groupChatMessage.vue'
+	import GroupSubmit from '../../components/group/groupSubmit.vue'
 	export default {
 		components: {
-			ChatMessage,
-			SendMessageInput
+			GroupChatMessage,
+			GroupSubmit
 		},
 		data() {
 			return {
 				groupName: '',
 				groupId: '',
-				message: [{
-						content: '昨天下午 6:31',
-						type: 'time',
-						tag: 'text'
-					},
-
-					{
-						content: '你好啊',
-						type: 'others',
-						tag: 'text'
-					},
-					{
-						content: 'https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/avatar/1.jpeg',
-						type: 'myself',
-						tag: 'image'
-					}
-				],
+				message: [],
 				isShowBlank: false,
-				friendMessage: {},
-				account: ''
+				groupMessage: [],
+				account: '',
+				avatar:'',
+				groupInfo:{},
+				
 			};
 		},
 		onLoad: function(option) {
 			this.groupName = option.groupName
 			this.groupId = option.groupId
-			// this.acceptMessage()
+			this.acceptGroupMessage()
 			// this.getFriendInfo()
-			// this.getAccount()
-
+			this.getAccount()
+			this.getGroupInfo(option.groupId)
+			this.socket.on('getUpdatedGroupMessage',(data)=>{
+				if(this.groupInfo.members.some(item => item.member === this.account)){
+					console.log('data',this.account)
+					this.getGroupInfo(option.groupId)
+					// this.saveHomeMessageList({
+					// 	account:this.account,
+					// 	friendId:this.groupInfo.groupId,
+					// 	sender:this.groupInfo.members.find(item => item.member === this.account).groupNote,
+					// 	lastDate:Date.now(),
+					// 	isShow:true,
+					// 	lastContent:data.content,
+					// 	notRead:2,
+					// 	isGroup:true,
+					// 	isTop:false,
+					// 	groupName:this.groupInfo.groupName,
+					// 	isRemind:true,
+					// 	avatar:this.groupInfo.groupAvatar
+					// })
+				}
+			})
+			
 
 		},
 		methods: {
@@ -79,139 +87,95 @@
 					url: `/pages/group/groupSetting?id=${this.groupId}`
 				})
 			},
-			// getFriendInfo() {
-			// 	let that = this
-			// 	uni.getStorage({
-			// 		key: 'accountId',
-			// 		success: function(res) {
-			// 			uni.request({
-			// 				url: that.$baseUrl + '/users/chat/friendInfo',
-			// 				method: 'post',
-			// 				data: {
-			// 					account: res.data,
-			// 					friendId: that.friendId
-			// 				},
-			// 				success: (data) => {
-			// 					console.log('friendInfo', data)
-			// 					that.friendMessage = data.data.friendMessage[0]
-			// 				}
-			// 			})
-			// 		}
-			// 	})
-			// },
-			
-			// saveHomeMessageList(obj) {
-			// 	uni.request({
-			// 		url: this.$baseUrl + '/users/chat/saveHomeMessageList',
-			// 		method: 'post',
-			// 		data: obj,
-			// 		success: (data) => {
-			// 			this.socket.emit('updateMessageList', {
-			// 				account: this.account,
-			// 				friendId: this.friendId
-			// 			})
-			// 		}
-			// 	})
-			// },
-			// acceptMessage() {
-
-			// 	this.socket.on('news', (data) => {
-			// 		console.log('accc', this.account, data.account, 'friendIDdd', this.friendId, data.friendId)
-			// 		console.log('if', data.account === this.account && data.friendId === this.friendId)
-			// 		if (data.account === this.account && data.friendId === this.friendId || data.account === this
-			// 			.friendId && data.friendId === this.account) {
-			// 			let timeDiff = this.friendMessage.messages?.length > 0 ? Date.now() - this.friendMessage
-			// 				.messages[this.friendMessage.messages.length - 1].time : 999999999999999
-			// 			if (timeDiff > 1000 * 60 * 3) {
-
-			// 				this.friendMessage.messages.push({
-			// 					mid: this.account + Date.now(),
-			// 					content: Date.now(),
-			// 					type: 'time',
-			// 					tag: 'text',
-			// 					time: Date.now(),
-			// 					isRead: 2
-			// 				})
-			// 				uni.request({
-			// 					url: this.$baseUrl + '/users/chat/sendMessage',
-			// 					method: 'post',
-			// 					data: {
-			// 						account: this.account,
-			// 						friendId: this.friendId,
-			// 						message: {
-			// 							mid: this.account + Date.now(),
-			// 							content: Date.now(),
-			// 							type: 'time',
-			// 							tag: 'text',
-			// 							time: Date.now(),
-			// 							isRead: 2
-			// 						}
-			// 					},
-			// 					success: (data) => {
-			// 						// that.getUserInfo()
-			// 					}
-			// 				})
-			// 			}
-
-			// 			this.friendMessage.messages.push({
-			// 				mid: this.account + Date.now(),
-			// 				content: data.content,
-			// 				type: this.account === data.account ? 'myself' : 'others',
-			// 				tag: 'text',
-			// 				time: Date.now(),
-			// 				isRead: 0
-			// 			})
-			// 			uni.request({
-			// 				url: this.$baseUrl + '/users/chat/sendMessage',
-			// 				method: 'post',
-			// 				data: {
-			// 					account: this.account,
-			// 					friendId: this.friendId,
-			// 					message: {
-			// 						mid: this.account + Date.now(),
-			// 						content: data.content,
-			// 						type: this.account === data.account ? 'myself' : 'others',
-			// 						tag: 'text',
-			// 						time: Date.now(),
-			// 						isRead: 0
-			// 					}
-			// 				},
-			// 				success: (data) => {
-			// 					// that.getUserInfo()
-			// 				}
-			// 			})
-			// 			console.log(this.firendMessage)
-			// 			this.saveHomeMessageList({
-			// 				account: this.account,
-			// 				sender: this.friendMessage.note || this.friendMessage.name,
-			// 				friendId: this.friendMessage.friendId,
-			// 				lastDate: Date.now(),
-			// 				isShow: true,
-			// 				lastContent: data.content,
-			// 				notRead: 9,
-			// 				isGroup: false,
-			// 				isTop: false,
-			// 				groupName: '',
-			// 				isRemind: true,
-			// 				avatar: this.friendMessage.avatar
-			// 			})
-			// 			this.saveHomeMessageList({
-			// 				account: this.friendMessage.friendId,
-			// 				sender: this.friendMessage.note || this.friendMessage.name,
-			// 				friendId: this.account,
-			// 				lastDate: Date.now(),
-			// 				isShow: true,
-			// 				lastContent: data.content,
-			// 				notRead: 9,
-			// 				isGroup: false,
-			// 				isTop: false,
-			// 				groupName: '',
-			// 				isRemind: true,
-			// 				avatar: this.friendMessage.avatar
-			// 			})
-			// 		}
-			// 	})
-			// }
+			getGroupInfo(groupId){
+				uni.request({
+					url: this.$baseUrl + '/group/getGroupInfo',
+					method: 'post',
+					data: {
+						groupId:groupId
+					},
+					success: (data) => {
+						console.log('groupInfo', data.data.messageList)
+						this.groupMessage = data.data.messageList
+						this.groupInfo = data.data.groupInfo
+					}
+				})
+			},
+		
+			saveHomeMessageList(obj){
+				console.log('save')
+				uni.request({
+					url: this.$baseUrl + '/users/chat/saveHomeMessageList',
+					method: 'post',
+					data:obj,
+					success: (data) => {
+						this.socket.emit('updateMessageList',{
+							account:this.account,
+							friendId:this.groupId
+						})
+					}
+				})
+			},
+			acceptGroupMessage(){
+				this.socket.on('acceptGroupMessage',data => {
+					let timeDiff = this.groupMessage?.length > 0 ? Date.now() - this.groupMessage[this.groupMessage.length - 1].time : 999999999999999
+					if (timeDiff > 1000 * 60 * 3) {
+						uni.request({
+							url: this.$baseUrl + '/group/acceptGroupMessage',
+							method: 'post',
+							data: {
+								groupId:data.groupId,
+								message: {
+									mid: data.groupId + data.account + Date.now(),
+									content: Date.now(),
+									tag: 'time',
+									time: Date.now(),
+									isRead: 0,
+								}
+							},
+							success: (data) => {
+								// that.getUserInfo()
+							}
+						})
+					}
+					
+					uni.request({
+						url: this.$baseUrl + '/group/acceptGroupMessage',
+						method: 'post',
+						data: {
+							groupId:data.groupId,
+							message: {
+								mid: data.groupId + data.account + Date.now(),
+								content: data.content,
+								sender: data.account,
+								tag: 'text',
+								time: Date.now(),
+								isRead: 0
+							}
+						},
+						success: (res) => {
+							this.socket.emit('updateGroupMessageList',data)
+							this.groupInfo.members.forEach((item)=>{
+								this.saveHomeMessageList({
+									account:item.member,
+									friendId:this.groupInfo.groupId,
+									sender:this.groupInfo.members.find(item => item.member === this.account).groupNote,
+									lastDate:Date.now(),
+									isShow:true,
+									lastContent:data.content,
+									notRead:2,
+									isGroup:true,
+									isTop:false,
+									groupName:this.groupInfo.groupName,
+									isRemind:true,
+									avatar:this.groupInfo.groupAvatar
+								})
+							})
+						}
+					})
+					
+				})
+			}
 		}
 	}
 </script>

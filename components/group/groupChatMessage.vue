@@ -1,20 +1,20 @@
 <template>
 	<view>
 		<view v-for="(item,index) in messageList">
-			<view v-if="item.type === 'time'" class="chatTime">
-				<!-- {{item.content}} -->
+			<view v-if="item.tag === 'time'" class="chatTime">
 				<uni-dateformat v-if="new Date().getDate() !== new Date(item.content).getDate()" :date="item.content" :threshold="[0,0]" format="MM/dd hh:mm"></uni-dateformat>
 				<uni-dateformat v-else :date="item.content" :threshold="[0,0]" format="hh:mm"></uni-dateformat>
 			</view>
 			
-			<view v-else :class="['chatText',item.type === 'myself' ? 'myselfChatContent' : '']" >
-				<image class="avatar" :src=" item.type === 'myself' ? selfAvatar : avatar" mode=""></image>
-				<text selectable="true" v-if="item.tag === 'text'" :class="['content',item.type === 'myself' ? 'myContent' : '']">{{item.content}}</text>
-				<!-- <u-tooltip :text='<text :class="['content',item.type === 'myself' ? 'myContent' : '']'>{{item.content}}</text>"></u-tooltip> -->
-				<!-- <u-tooltip :text="item.content">{{item.content}}</u-tooltip> -->
+			<view v-else :class="['chatText',item.sender === account ? 'myselfChatContent' : '']" >
+				<image class="avatar" :src="item.avatar" mode=""></image>
+				<view :class="['contentContainer',item.sender === account ? 'myContentContainer' : 'othersContentContainer']">
+					<text class="name">{{item.name}}</text>
+					<text selectable="true" v-if="item.tag === 'text'" :class="['content',item.sender === account ? 'myContent' : '']">{{item.content}}</text>
+				</view>
+	
 				<image class="contentImage" v-if="item.tag === 'image'" :src="item.content" mode="widthFix"></image>
-				 <!-- <u-tooltip src="https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/avatar/1.jpeg" text="https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/avatar/1.jpeg" direction="bottom"></u-tooltip> -->
-				<text v-if="item.type === 'myself'" :class="{'isRead':true,'hasRead':true}">{{true ? '未读' : '已读'}}</text>
+				<!-- <text v-if="item.type === 'myself'" :class="{'isRead':true,'hasRead':true}">{{true ? '未读' : '已读'}}</text> -->
 			</view>
 		</view>
 		
@@ -31,8 +31,7 @@
 					return [];
 				}
 			},
-			avatar:String,
-			selfAvatar:String
+			account:String
 		},
 		data() {
 			return {
@@ -74,6 +73,21 @@
 		width: 80rpx;
 		height: 80rpx;
 		padding: 0 20rpx 0 30rpx;
+	}
+	.contentContainer{
+		display: flex;
+		flex-direction: column;
+	}
+	.othersContentContainer{
+		align-items: flex-start;
+	}
+	.myContentContainer{
+		align-items: flex-end;
+	}
+	.name{
+		font-size: 30rpx;
+		color: #8a8d9b;
+		margin-bottom: 10rpx;
 	}
 	.content{
 		background: #fff;

@@ -10,7 +10,7 @@
 		</view>
 		<scroll-view class="chatContent" scroll-y="true" scroll-with-animation="true">
 			<view class="">
-				<chat-message :avatar="friendMessage.avatar" :messageList="friendMessage.messages"></chat-message>
+				<chat-message :avatar="friendMessage.avatar" :selfAvatar="avatar" :messageList="friendMessage.messages"></chat-message>
 			</view>
 			<view v-if="isShowBlank" class="blankContent"></view>
 		</scroll-view>
@@ -30,26 +30,11 @@
 			return {
 				name: '',
 				friendId: '',
-				message: [{
-						content: '昨天下午 6:31',
-						type: 'time',
-						tag: 'text'
-					},
-
-					{
-						content: '你好啊',
-						type: 'others',
-						tag: 'text'
-					},
-					{
-						content: 'https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/avatar/1.jpeg',
-						type: 'myself',
-						tag: 'image'
-					}
-				],
+				message: [],
 				isShowBlank: false,
 				friendMessage: {},
-				account: ''
+				account: '',
+				avatar:''
 			};
 		},
 		onLoad: function(option) {
@@ -71,6 +56,16 @@
 					key: 'accountId',
 					success: function(res) {
 						that.account = res.data
+						uni.request({
+							url: that.$baseUrl + '/users/info',
+							method: 'post',
+							data: {
+								account: res.data
+							},
+							success: (data) => {
+								that.avatar = data.data.info.avatar
+							}
+						})
 					}
 				})
 			},
