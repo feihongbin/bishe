@@ -74,42 +74,42 @@ let sendPhoneCode = function (req, res, next) {
 
 // 用户登录
 let login = function (req, res, next) {
-  // let { account, password } = req.body
-  // if (isMobile(account)) {
-  //   accountModel.find({ tel: account }, (err, data) => {
-  //     if (data.length === 1 && data[0].password === password && data[0].tel === account) {
-  res.send({
-    code: 200,
-    msg: '登录成功',
-    account: account
+  let { account, password } = req.body
+  if (isMobile(account)) {
+    accountModel.find({ tel: account }, (err, data) => {
+      if (data.length === 1 && data[0].password === password && data[0].tel === account) {
+        res.send({
+          code: 200,
+          msg: '登录成功',
+          account: account
 
-  })
-  //     } else {
-  //       res.send({
-  //         code: 400,
-  //         msg: '账号密码输入错误',
-  //       })
-  //     }
-  //   })
-  // } else {
-  //   accountModel.find({ tid: account }, (err, data) => {
-  //     if (data.length === 1 && data[0].password === password && data[0].tid === account) {
-  //       res.send({
-  //         code: 200,
-  //         msg: '登录成功',
-  //         account: account
-  //       })
-  //     } else {
-  //       res.send({
-  //         code: 400,
-  //         msg: '账号密码输入错误',
-  //       })
-  //     }
+        })
+      } else {
+        res.send({
+          code: 400,
+          msg: '账号密码输入错误',
+        })
+      }
+    })
+  } else {
+    accountModel.find({ tid: account }, (err, data) => {
+      if (data.length === 1 && data[0].password === password && data[0].tid === account) {
+        res.send({
+          code: 200,
+          msg: '登录成功',
+          account: account
+        })
+      } else {
+        res.send({
+          code: 400,
+          msg: '账号密码输入错误',
+        })
+      }
 
-  //   })
-  // }
+    })
+  }
   // res.send({
-  //   code: 200,
+  //   code: 400,
   //   msg: '账号密码输入错误'
   // })
 
