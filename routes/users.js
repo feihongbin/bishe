@@ -22,28 +22,19 @@ router.post('/isExist', account.accountIsExist);
 router.post('/addFriend/sendRequest', account.sendAddFriendRequest);
 router.post('/addFriend/agree', account.friendAgree);
 
-router.post('/contacts/getFriendList', account.getFriendList);
 router.post('/home/messageList', account.getHomeMessageList);
 router.post('/home/newFriendCount', account.getNewFriendCount);
 router.post('/home/newFriendList', account.getNewFriendList);
 router.post('/home/newFriendDetail', account.getNewFriendDetail);
+router.post('/contacts/getFriendList', account.getFriendList);
+router.post('/contacts/getGroupList', account.getGroupList);
+
+router.post('/contacts/updateGroupList', account.updateGroupList);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+router.post('/chat/friendInfo', account.getChatFriendInfo);
+router.post('/chat/sendMessage', account.sendMessage);
+router.post('/chat/saveHomeMessageList', account.saveHomeMessageList);
 
 
 module.exports = router;

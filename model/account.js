@@ -1,12 +1,4 @@
-const { Schema } = require('../config/dbConfig')
 const mongodb = require('../config/dbConfig')
-
-const toBeConfirmed = new Schema({
-  friendId: String,
-  message: String,
-  note: String,
-  group: String
-})
 
 
 const AccountSchema = mongodb.Schema({
