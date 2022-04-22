@@ -25,7 +25,7 @@ const upload = multer({ storage: storage })
 router.post('/singleFile', upload.array('file', 10), function (req, res, next) {
   // req.file 是 `avatar` 文件的信息
   // req.body 将具有文本域数据，如果存在的话
-  let data = req.files[0].filename;
+  let data = req.files[0];
   res.send(data)
 
 })
