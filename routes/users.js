@@ -16,6 +16,13 @@ router.post('/info/getLocation', account.getLocation);
 router.post('/info/setLocation', account.setLocation);
 router.post('/info/getNative', account.getNative);
 router.post('/info/setNative', account.setNative);
+router.post('/info/setName', account.setName);
+router.post('/info/setSignature', account.setSignature);
+router.post('/info/setCareer', account.setCareer);
+router.post('/info/setAvatar', account.setAvatar);
+
+
+
 
 
 router.post('/isExist', account.accountIsExist);

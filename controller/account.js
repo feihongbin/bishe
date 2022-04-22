@@ -232,6 +232,80 @@ let setGender = function (req, res, next) {
   }
 }
 
+let setCareer = function (req, res, next) {
+  let { account, career } = req.body
+  if (isMobile(account)) {
+    accountModel.updateOne({ tel: account }, { career: career }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+  } else {
+    accountModel.updateOne({ tid: account }, { career: career }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success',
+      })
+    })
+  }
+}
+
+let setAvatar = function (req, res, next) {
+  let { account, avatar } = req.body
+  if (isMobile(account)) {
+    accountModel.updateOne({ tel: account }, { avatar: avatar }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+  } else {
+    accountModel.updateOne({ tid: account }, { avatar: avatar }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success',
+      })
+    })
+  }
+}
+let setName = function (req, res, next) {
+  let { account, name } = req.body
+  if (isMobile(account)) {
+    accountModel.updateOne({ tel: account }, { name: name }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+  } else {
+    accountModel.updateOne({ tid: account }, { name: name }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success',
+      })
+    })
+  }
+}
+
+let setSignature = function (req, res, next) {
+  let { account, signature } = req.body
+  if (isMobile(account)) {
+    accountModel.updateOne({ tel: account }, { signature: signature }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+  } else {
+    accountModel.updateOne({ tid: account }, { signature: signature }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success',
+      })
+    })
+  }
+}
 let getLocation = function (req, res, next) {
   let { account } = req.body
   if (isMobile(account)) {
@@ -924,5 +998,9 @@ module.exports = {
   sendMessage,
   saveHomeMessageList,
   updateGroupList,
-  getGroupList
+  getGroupList,
+  setSignature,
+  setName,
+  setCareer,
+  setAvatar
 }
