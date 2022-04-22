@@ -2,10 +2,17 @@
 	<view class="mineContainer">
 		<uni-icons type="back" size="24"></uni-icons>
 		<view class="info">
-			<image class="avatar" :src="userInfo.avatar" mode=""></image>
+			<image @click="changeAvatar" class="avatar" :src="userInfo.avatar" mode=""></image>
 			<view>
-				<text class="name">{{userInfo.name}}</text>
-				<text class="signature">{{userInfo.signature}}</text>
+				<view class="nameItem" @click="nameClick(userInfo.name)">
+					<text class="name">{{userInfo.name}}</text>
+					<u-icon name="edit-pen" size="18"></u-icon>
+				</view>
+				<view class="nameItem" @click="signatureClick(userInfo.signature)">
+					<text class="signature">{{userInfo.signature}}</text>
+					<u-icon name="edit-pen" size="18"></u-icon>
+				</view>
+
 			</view>
 		</view>
 		<view class="detail">
@@ -20,8 +27,8 @@
 				@click.native="locationClick('?location=浙江-杭州')"></info-item>
 			<info-item class="detailItem" label="家乡" :content="userInfo.native" showArrow
 				@click.native="nativeClick('?native=浙江-杭州')"></info-item>
-			<info-item class="detailItem" label="职业" :content="userInfo.career" showArrow
-				@click.native="careerClick('')"></info-item>
+			<info-item class="detailItem" label="职业" :content="careerMap.get(userInfo.career) || '选择职业，发现同行'" showArrow
+				@click.native="careerClick(userInfo.career)"></info-item>
 		</view>
 		<u-picker :show="genderShow" :columns="columns" :defaultIndex="defaultIndex" @cancel="genderCancel"
 			@confirm="genderConfirm" :closeOnClickOverlay="true"></u-picker>
@@ -38,7 +45,13 @@
 				genderShow: false,
 				columns: [
 					['男', '女']
-				]
+				],
+				careerMap:new Map([
+					['1','计算机/互联网/通信'],
+					['2','生产/工艺/制造'],
+					['3','医疗/护理/制药'],
+					['4','金融/银行/投资/保险']
+				])
 
 			};
 		},
@@ -80,23 +93,67 @@
 
 			birthClick(str) {
 				uni.navigateTo({
-					url: `editInfo/birth`
+					url: `/pages/mine/editInfo/birth`
 				})
 			},
 			locationClick(str) {
 				uni.navigateTo({
-					url: `editInfo/location${str}`
+					url: `/pages/mine/editInfo/location${str}`
 				})
 			},
 			nativeClick(str) {
 				uni.navigateTo({
-					url: `editInfo/native${str}`
+					url: `/pages/mine/editInfo/native${str}`
 				})
 			},
-			careerClick() {
+			careerClick(val) {
 				uni.navigateTo({
-					url: `editInfo/career`
+					url: `/pages/mine/editInfo/career?current=${val}`
 				})
+			},
+			nameClick(str) {
+				uni.navigateTo({
+					url: `/pages/mine/editInfo/name?name=${str}`
+				})
+			},
+			signatureClick(str) {
+				uni.navigateTo({
+					url: `/pages/mine/editInfo/signature?signature=${str}`
+				})
+			},
+			changeAvatar(){
+				uni.chooseImage({
+					count: 1, //默认9
+					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+					sourceType: ['album'], //从相册选择
+					success: (chooseImageRes) => {
+						const tempFilePaths = chooseImageRes.tempFilePaths;
+						uni.uploadFile({
+							url: 'http://127.0.0.1:3000/upload/singleFile', //仅为示例，非真实的接口地址
+							filePath: tempFilePaths[0],
+							name: 'file',
+							// formData: {
+							// 	'user': 'test'
+							// },
+							success: (uploadFileRes) => {
+								let data = JSON.parse(uploadFileRes.data)
+								let fileUrl = 'http://127.0.0.1:3000/uploads/' + data.filename
+								uni.request({
+									url: this.$baseUrl + '/users/info/setAvatar',
+									method: 'post',
+									data: {
+										account: this.userInfo.tid,
+										avatar: fileUrl
+									},
+									success: (data) => {
+										console.log(123444)
+										this.getUserInfo()
+									}
+								})
+							}
+						});
+					}
+				});
 			},
 			formateStampToDate(timestamp) {
 				let date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
@@ -131,7 +188,7 @@
 
 			},
 		},
-		onLoad() {
+		created() {
 			this.getUserInfo()
 			uni.$on('refreshData', () => {
 				this.getUserInfo()
@@ -162,14 +219,29 @@
 				display: flex;
 				flex-direction: column;
 
-				.name {
-					font-size: 48rpx;
+				.nameItem {
+					display: flex;
+					flex-direction: row;
+					align-items: flex-end;
+
+					.name {
+						max-width: 400rpx;
+						font-size: 48rpx;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap
+					}
+
+					.signature {
+						max-width: 400rpx;
+						font-size: 30rpx;
+						color: #333333;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap
+					}
 				}
 
-				.signature {
-					font-size: 30rpx;
-					color: #333333;
-				}
 			}
 		}
 

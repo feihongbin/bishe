@@ -3,20 +3,21 @@
 		<u-swipe-action>
 			<u-swipe-action-item :options="options">
 				<view class="messageContainer">
-					<image class="avatar" :src="messageItem.avatar" mode="aspectFit"></image>
+					<image class="avatar" :src="messageItem.avatar" mode=""></image>
 					<view class="messageContent" @click="toMessageDetail">
 						<view class="nameAndTime">
-							<text>{{messageItem.sender}}</text>
+							<text>{{!messageItem.isGroup ? messageItem.sender : messageItem.groupName}}</text>
 							<!-- <text>{{messageItem.lastDate}}</text> -->
 							<uni-dateformat :date="Number(messageItem.lastDate)" :threshold="[60000,3600000 * 24 * 7]" format="yyyy/mm/dd"></uni-dateformat>
 						</view>
 						<view class="content">
-							{{messageItem.lastContent}}
+							{{messageItem.isGroup ? (messageItem.sender +':' + messageItem.lastContent) : messageItem.lastContent}}
 						</view>
 						<text class="messageNumber" v-if="messageItem.notRead>0">
 							{{messageItem.notRead | isNumberOverflow}}
 							
 						</text>
+						
 					</view>
 				</view>
 			</u-swipe-action-item>
@@ -113,16 +114,20 @@
 		.messageContent {
 			flex: 1;
 			position: relative;
-
+			box-sizing: border-box;
 			.nameAndTime {
 				display: flex;
 				justify-content: space-between;
 				align-items: flex-end;
 				padding: 10rpx 20rpx;
 				padding-top: 0rpx;
-
 				text:nth-child(1) {
+					
 					font-size: 36rpx;
+					overflow:hidden;
+					    text-overflow:ellipsis;
+					    white-space:nowrap;
+						max-width: 420rpx;
 				}
 
 				text:nth-child(2) {

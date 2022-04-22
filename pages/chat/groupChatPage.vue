@@ -8,7 +8,7 @@
 			</view>
 			<uni-icons type="bars" size="24" @click="toSetGroup"></uni-icons>
 		</view>
-		<scroll-view class="chatContent" scroll-y="true" scroll-with-animation="true">
+		<scroll-view class="chatContent" scroll-y="true" scroll-with-animation="true" :scroll-into-view="scrollView">
 			<view class="">
 				<group-chat-message :account="account" :messageList="groupMessage"></group-chat-message>
 			</view>
@@ -36,13 +36,13 @@
 				account: '',
 				avatar:'',
 				groupInfo:{},
-				
+				scrollView:''
 			};
 		},
 		onLoad: function(option) {
 			this.groupName = option.groupName
 			this.groupId = option.groupId
-			this.acceptGroupMessage()
+			// this.acceptGroupMessage(data)
 			// this.getFriendInfo()
 			this.getAccount()
 			this.getGroupInfo(option.groupId)
@@ -65,6 +65,9 @@
 					// 	avatar:this.groupInfo.groupAvatar
 					// })
 				}
+			})
+			this.socket.on('acceptGroupMessage',data => {
+				this.acceptGroupMessage(data)
 			})
 			
 
@@ -98,6 +101,9 @@
 						console.log('groupInfo', data.data.messageList)
 						this.groupMessage = data.data.messageList
 						this.groupInfo = data.data.groupInfo
+						this.$nextTick(function(){
+							this.scrollView = "msg"+this.groupMessage[this.groupMessage.length - 1].mid
+						})
 					}
 				})
 			},
@@ -116,9 +122,10 @@
 					}
 				})
 			},
-			acceptGroupMessage(){
-				this.socket.on('acceptGroupMessage',data => {
-					let timeDiff = this.groupMessage?.length > 0 ? Date.now() - this.groupMessage[this.groupMessage.length - 1].time : 999999999999999
+			acceptGroupMessage(data){
+				
+					let time = Date.now()
+					let timeDiff = this.groupMessage?.length > 0 ? time - this.groupMessage[this.groupMessage.length - 1].time : 999999999999999
 					if (timeDiff > 1000 * 60 * 3) {
 						uni.request({
 							url: this.$baseUrl + '/group/acceptGroupMessage',
@@ -126,10 +133,10 @@
 							data: {
 								groupId:data.groupId,
 								message: {
-									mid: data.groupId + data.account + Date.now(),
-									content: Date.now(),
+									mid: data.groupId + data.account + time,
+									content: time,
 									tag: 'time',
-									time: Date.now(),
+									time: time,
 									isRead: 0,
 								}
 							},
@@ -145,11 +152,11 @@
 						data: {
 							groupId:data.groupId,
 							message: {
-								mid: data.groupId + data.account + Date.now(),
+								mid: data.groupId + data.account + time,
 								content: data.content,
 								sender: data.account,
 								tag: 'text',
-								time: Date.now(),
+								time: time,
 								isRead: 0
 							}
 						},
@@ -160,7 +167,7 @@
 									account:item.member,
 									friendId:this.groupInfo.groupId,
 									sender:this.groupInfo.members.find(item => item.member === this.account).groupNote,
-									lastDate:Date.now(),
+									lastDate:time,
 									isShow:true,
 									lastContent:data.content,
 									notRead:2,
@@ -172,7 +179,6 @@
 								})
 							})
 						}
-					})
 					
 				})
 			}

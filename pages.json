@@ -1,276 +1,277 @@
 {
 	"easycom": {
-			"^u-(.*)": "@/uni_modules/uview-ui/components/u-$1/u-$1.vue"
-		},
+		"^u-(.*)": "@/uni_modules/uview-ui/components/u-$1/u-$1.vue"
+	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		{
-			"path": "pages/index/index",
-			"style": {
-				// "navigationBarTitleText": "uni-app"
-				"navigationStyle":"custom"
-			}
-		},
 		{
 			"path": "pages/login/login",
 			"style": {
 				// "navigationBarTitleText": "登录"
-				"navigationStyle":"custom"
+				"navigationStyle": "custom"
 			}
-		}
-	    ,{
-            "path" : "pages/home/home",
-            "style" :                                                                                    
-            {
-                // "navigationBarTitleText": "",
-                // "enablePullDownRefresh": false
-				"navigationStyle":"custom"
-            }
-            
-        }
-        ,{
-            "path" : "pages/chat/chatPage",
-            "style" :                                                                                    
-            {
-                // "navigationBarTitleText": "",
-                // "enablePullDownRefresh": false
-				"navigationStyle":"custom",
-				"softinputMode":"adjustResize"
-            }
-            
-        }
-		,{
-		    "path" : "pages/chat/groupChatPage",
-		    "style" :                                                                                    
-		    {
-		        // "navigationBarTitleText": "",
-		        // "enablePullDownRefresh": false
-				"navigationStyle":"custom",
-				"softinputMode":"adjustResize"
-		    }
-		    
-		}
-		,{
-		    "path" : "pages/chat/chatSetting",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "聊天设置",
-		        "enablePullDownRefresh": false
+		},
+		{
+			"path": "pages/index/index",
+			"style": {
+				// "navigationBarTitleText": "uni-app"
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/index/rtcPage",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		 {
+			"path": "pages/home/home",
+			"style": {
+				// "navigationBarTitleText": "",
+				// "enablePullDownRefresh": false
+				"navigationStyle": "custom"
+			}
+
+		}, {
+			"path": "pages/chat/chatPage",
+			"style": {
+				// "navigationBarTitleText": "",
+				// "enablePullDownRefresh": false
+				"navigationStyle": "custom",
+				"softinputMode": "adjustResize"
+			}
+
+		}, {
+			"path": "pages/chat/groupChatPage",
+			"style": {
+				// "navigationBarTitleText": "",
+				// "enablePullDownRefresh": false
+				"navigationStyle": "custom",
+				"softinputMode": "adjustResize"
+			}
+
+		}, {
+			"path": "pages/chat/chatSetting",
+			"style": {
+				"navigationBarTitleText": "聊天设置",
+				"enablePullDownRefresh": false
 				// "navigationStyle":"custom",
 				// "softinputMode":"adjustResize"
-		    }
-		    
-		}
-        ,{
-            "path" : "pages/findPsw/index",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        },
-		{
-		    "path" : "pages/findPsw/phone",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		}
-        ,{
-            "path" : "pages/register/index",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        },
-		{
-		    "path" : "pages/register/code",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
-		    }
-		    
+			}
+
+		}, {
+			"path": "pages/findPsw/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		},
 		{
-		    "path" : "pages/register/register",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
-		    }
-		    
+			"path": "pages/findPsw/phone",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/register/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		},
-        {
-            "path" : "pages/mine/mine",
-            "style" :                                                                                    
-            {
-                // "navigationBarTitleText": "",
-                // "enablePullDownRefresh": false
+		{
+			"path": "pages/register/code",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/register/register",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+		// {
+		// 	"path": "pages/mine/mine",
+		// 	"style": {
+		// 		// "navigationBarTitleText": "",
+		// 		// "enablePullDownRefresh": false
+		// 		"navigationStyle": "custom"
+		// 	}
+
+		// }
+		//     ,{
+		//         "path" : "pages/contacts/contacts",
+		//         "style" :                                                                                    
+		//         {
+		//             // "navigationBarTitleText": "",
+		//             // "enablePullDownRefresh": false
+		// "navigationStyle":"custom"
+		//         }
+
+		//     }
+		, {
+			"path": "pages/contacts/addFriend/addFriend",
+			"style": {
+				"navigationBarTitleText": "添加",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/contacts/addFriend/searchResult",
+			"style": {
+				// "navigationBarTitleText": "添加",
+				// "enablePullDownRefresh": false
+				"navigationStyle": "custom"
+			}
+
+		},
+		{
+			"path": "pages/contacts/addFriend/newFriends",
+			"style": {
+				"navigationBarTitleText": "新朋友",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/contacts/addFriend/requestDetail",
+			"style": {
+				"navigationBarTitleText": "好友申请",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/contacts/addFriend/sendRequest",
+			"style": {
+				// "navigationBarTitleText": "新朋友",
+				// "enablePullDownRefresh": false
+				"navigationStyle": "custom"
+		 }
+
+		},
+		{
+			"path": "pages/findPsw/findPsw",
+			"style": {
+				"navigationBarTitleText": "设置密码",
+				"enablePullDownRefresh": false
+		 }
+
+		}, {
+			"path": "pages/findPsw/success",
+			"style": {
+				"navigationBarTitleText": "密码设置成功",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/register/success",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+
+		, {
+			"path": "pages/mine/editInfo/birth",
+			"style": {
+				"navigationBarTitleText": "选择生日日期",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/mine/editInfo/location",
+			"style": {
+				"navigationBarTitleText": "所在地",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/mine/editInfo/native",
+			"style": {
+				"navigationBarTitleText": "故乡",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/mine/editInfo/career",
+			"style": {
+				"navigationBarTitleText": "职业",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/mine/editInfo/name",
+			"style": {
+				// "navigationBarTitleText": "职业",
+				// "enablePullDownRefresh": false
 				"navigationStyle":"custom"
-            }
-            
-        }
-    //     ,{
-    //         "path" : "pages/contacts/contacts",
-    //         "style" :                                                                                    
-    //         {
-    //             // "navigationBarTitleText": "",
-    //             // "enablePullDownRefresh": false
-				// "navigationStyle":"custom"
-    //         }
-            
-    //     }
-        ,{
-            "path" : "pages/contacts/addFriend/addFriend",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "添加",
-                "enablePullDownRefresh": false
-            }
-            
-        },
+			}
+		
+		},
 		{
-		    "path" : "pages/contacts/addFriend/searchResult",
-		    "style" :                                                                                    
-		    {
-		        // "navigationBarTitleText": "添加",
-		        // "enablePullDownRefresh": false
+			"path": "pages/mine/editInfo/signature",
+			"style": {
+				// "navigationBarTitleText": "职业",
+				// "enablePullDownRefresh": false
 				"navigationStyle":"custom"
-		    }
-		    
-		},
-		{
-		    "path" : "pages/contacts/addFriend/newFriends",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "新朋友",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		},
-		{
-		    "path" : "pages/contacts/addFriend/requestDetail",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "好友申请",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		},
-		{
-		    "path" : "pages/contacts/addFriend/sendRequest",
-		    "style" :                                                                                    
-		    {
-		        // "navigationBarTitleText": "新朋友",
-		        // "enablePullDownRefresh": false
-				"navigationStyle":"custom"
-		    }
-		    
-		},
-		{
-		    "path" : "pages/findPsw/findPsw",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "设置密码",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		}
-        ,{
-            "path" : "pages/findPsw/success",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "密码设置成功",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/register/success",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        
-        ,{
-            "path" : "pages/mine/editInfo/birth",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "选择生日日期",
-                "enablePullDownRefresh": false
-            }
-            
-        },
-		{
-            "path" : "pages/mine/editInfo/location",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "所在地",
-                "enablePullDownRefresh": false
-            }
-            
-        },
-		{
-		    "path" : "pages/mine/editInfo/native",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "故乡",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		},
-		{
-		    "path" : "pages/mine/editInfo/career",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "职业",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		}
-        ,{
-            "path" : "pages/group/group",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-		,{
-		    "path" : "pages/group/groupSetting",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "群聊设置",
-		        "enablePullDownRefresh": false
-		    }
-		    
+			}
+		
 		},{
-		    "path" : "pages/group/groupIntroduce",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "群聊资料",
-		        "enablePullDownRefresh": false
-		    }
-		    
+			"path": "pages/group/group",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/group/groupSetting",
+			"style": {
+				"navigationBarTitleText": "群聊设置",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/group/groupIntroduce",
+			"style": {
+				"navigationBarTitleText": "群聊资料",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/group/createGroup/createGroup",
+			"style": {
+				"navigationBarTitleText": "创建群聊",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/rtc/singleRtcPage",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+				// "navigationStyle":"custom",
+				// "softinputMode":"adjustResize"
+			}
+
 		}
-        ,{
-            "path" : "pages/group/createGroup/createGroup",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "创建群聊",
-                "enablePullDownRefresh": false
-            }
-            
-        }
+	 
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

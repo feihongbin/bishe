@@ -29,7 +29,7 @@
 			editInfo(){
 				console.log(this.to)
 				uni.navigateTo({
-					url:`../pages/mine/editInfo`
+					url:`/pages/mine/editInfo`
 				})
 			}
 		}

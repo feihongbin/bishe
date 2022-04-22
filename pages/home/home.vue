@@ -27,6 +27,7 @@
 			</view>
 		</view>
 		<contact v-if="currentPage==='contacts'"></contact>
+		<mine v-if="currentPage==='mine'"></mine>
 		<view class="bottomNav">
 			<view class="navItem" @click="changeNavItem(navItems[0])">
 				<uni-icons :type="navItems[0]" :color="navItems[0] === 'chatbubble-filled' ? '#3c91ff':''" size="30">
@@ -98,11 +99,11 @@
 					})
 					
 					this.currentPage = this.navMap.get(str)
-					if(this.currentPage === 'mine'){
-						uni.navigateTo({
-							url: `../${this.navMap.get(str)}/${this.navMap.get(str)}`
-						})
-					}
+					// if(this.currentPage === 'mine'){
+					// 	uni.navigateTo({
+					// 		url: `../${this.navMap.get(str)}/${this.navMap.get(str)}`
+					// 	})
+					// }
 				}
 
 

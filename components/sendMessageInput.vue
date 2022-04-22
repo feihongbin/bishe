@@ -171,8 +171,10 @@
 						let obj = {
 							content:that.inputContent,
 							friendId:that.friendId,
-							account:res.data
+							account:res.data,
+							
 						}
+						console.log('发送',obj.account)
 						that.socket.emit('singleMessage',obj)
 						that.inputContent = ''
 					}

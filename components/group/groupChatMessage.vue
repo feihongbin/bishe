@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view v-for="(item,index) in messageList">
+		<view v-for="(item,index) in messageList" :id="'msg'+item.mid">
 			<view v-if="item.tag === 'time'" class="chatTime">
 				<uni-dateformat v-if="new Date().getDate() !== new Date(item.content).getDate()" :date="item.content" :threshold="[0,0]" format="MM/dd hh:mm"></uni-dateformat>
 				<uni-dateformat v-else :date="item.content" :threshold="[0,0]" format="hh:mm"></uni-dateformat>
