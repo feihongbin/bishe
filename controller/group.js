@@ -66,7 +66,6 @@ let newGroup = function (req, res, next) {
 
 let getGroupInfo = function (req, res, next) {
   let { groupId } = req.body
-  console.log('groupId', groupId)
   groupModel.find({ groupId: groupId }, (err, data) => {
     let m = data[0].members
     let ml = data[0].messageList
@@ -83,8 +82,6 @@ let getGroupInfo = function (req, res, next) {
         return item
       }
     })
-    console.log('map', map)
-    console.log('messageList', newMessageList)
     res.send({
       code: 200,
       msg: 'success',

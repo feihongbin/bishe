@@ -3,13 +3,14 @@ module.exports = function (io) {
   let member = 0
 
   io.sockets.on('connection', socket => {
-    console.log('socket')
+    console.log('socket', socket.id)
+
     socket.on('singleMessage', data => {
-      console.log(data)
+      console.log('socket31231', socket.id)
+
       // socket.broadcast.emit('news', '哈哈哈哈')
-      socket.broadcast.emit('news', data)
+      // socket.broadcast.emit('news')
       socket.emit('news', data)
-      console.log(data)
 
       // socket.emit('news', data)
       // console.log('zzzz', {
@@ -19,9 +20,13 @@ module.exports = function (io) {
       // })
 
     })
+    // 刷新聊天数据
+    socket.on('updateSingleNews', () => {
+      socket.broadcast.emit('refreshSingleNews')
+
+    })
 
     socket.on('newFriends', data => {
-      console.log(data)
 
       socket.broadcast.emit('newFriendRequest', data)
     })
@@ -54,7 +59,7 @@ module.exports = function (io) {
 
     // 发送群聊消息
     socket.on('groupMessage', data => {
-
+      console.log(data)
       socket.emit('acceptGroupMessage', data)
     })
 
