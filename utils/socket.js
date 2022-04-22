@@ -1,3 +1,4 @@
+var path = require('path')
 module.exports = function (io) {
   let socketList = {}
   let member = 0
