@@ -14,9 +14,8 @@ const storage = multer.diskStorage({
 
   },
   filename: function (req, file, cb) {
-    let type = file.originalname.replace(/.+\./, ".")
-    console.log(req.body)
-    cb(null, file.fieldname + type)
+    // let type = file.originalname.replace(/.+\./, ".")
+    cb(null, file.originalname)
   }
 })
 
