@@ -19,18 +19,18 @@ var client = new AipSpeechClient(APP_ID, API_KEY, SECRET_KEY);
 // });
 
 // 识别本地文件，附带参数
-// client.recognize(voiceBuffer, 'amr', 16000, { dev_pid: 1537 }).then(function (result) {
-//   console.log('<recognize>: ' + JSON.stringify(result));
-// }, function (err) {
-//   console.log(err);
-// });   
+client.recognize(voiceBuffer, 'amr', 16000, { dev_pid: 1537 }).then(function (result) {
+  console.log('<recognize>: ' + JSON.stringify(result));
+}, function (err) {
+  console.log(err);
+});
 
 router.post('/recognize', (req, res, next) => {
   let voice = fs.readFileSync(`./public/uploads/${req.body.filename}`);
 
   let voiceBuffer = new Buffer.from(voice);
   console.log('识别', req.body.filename)
-  client.recognize(voiceBuffer, 'amr', 16000).then(function (result) {
+  client.recognize(voiceBuffer, 'amr', 16000, { dev_pid: 1537 }).then(function (result) {
     console.log('<recognize>: ' + JSON.stringify(result));
     res.send({
       code: 200,
