@@ -30,7 +30,7 @@ router.post('/recognize', (req, res, next) => {
 
   let voiceBuffer = new Buffer.from(voice);
   console.log('识别', req.body.filename)
-  client.recognize(voiceBuffer, 'amr', 16000).then(function (result) {
+  client.recognize(voiceBuffer, 'pcm', 16000).then(function (result) {
     console.log('<recognize>: ' + JSON.stringify(result));
     res.send({
       code: 200,
