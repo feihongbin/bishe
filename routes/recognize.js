@@ -30,9 +30,9 @@ var client = new AipSpeechClient(APP_ID, API_KEY, SECRET_KEY);
 
 
 router.post('/recognize', (req, res, next) => {
-  // let voice = fs.readFileSync(`./public/uploads/${req.body.filename}`);
+  let voice = fs.readFileSync(`./public/uploads/${req.body.filename}`);
 
-  // let voiceBuffer = new Buffer.from(voice);
+  let voiceBuffer = new Buffer.from(voice);
   console.log('识别', req.body.filename)
   console.log(voice, voiceBuffer)
 
