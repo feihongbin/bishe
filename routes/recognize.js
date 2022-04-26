@@ -9,7 +9,9 @@ var API_KEY = "zh8ZAOHFP56lxpeYtAySyK2P";
 var SECRET_KEY = "39q13ThrLZXZU3Ac2mXGCGY9ToHK2fzY";
 var client = new AipSpeechClient(APP_ID, API_KEY, SECRET_KEY);
 
+// let voice = fs.readFileSync(`./public/uploads/test.amr`);
 
+// let voiceBuffer = new Buffer.from(voice);
 
 // 识别本地文件
 // client.recognize(voiceBuffer, 'amr', 16000).then(function (result) {
@@ -18,18 +20,22 @@ var client = new AipSpeechClient(APP_ID, API_KEY, SECRET_KEY);
 //   console.log(err);
 // });
 
-// 识别本地文件，附带参数
+// console.log(voice, voiceBuffer)
+// // 识别本地文件，附带参数
 // client.recognize(voiceBuffer, 'amr', 16000, { dev_pid: 1537 }).then(function (result) {
 //   console.log('<recognize>: ' + JSON.stringify(result));
 // }, function (err) {
 //   console.log(err);
-// });   
+// });
+
 
 router.post('/recognize', (req, res, next) => {
-  let voice = fs.readFileSync(`./public/uploads/${req.body.filename}`);
+  // let voice = fs.readFileSync(`./public/uploads/${req.body.filename}`);
 
-  let voiceBuffer = new Buffer.from(voice);
+  // let voiceBuffer = new Buffer.from(voice);
   console.log('识别', req.body.filename)
+  console.log(voice, voiceBuffer)
+
   client.recognize(voiceBuffer, 'amr', 16000, { dev_pid: 1537 }).then(function (result) {
     console.log('<recognize>: ' + JSON.stringify(result));
     res.send({
