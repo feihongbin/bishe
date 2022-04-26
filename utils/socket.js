@@ -2,16 +2,16 @@ var path = require('path')
 module.exports = function (io) {
   let socketList = {}
   let member = 0
+  let i = 0
 
   io.sockets.on('connection', socket => {
     console.log('socket', socket.id)
 
     socket.on('singleMessage', data => {
-      console.log('socket31231', socket.id)
-
+      console.log('执行了几次', socket.id)
       // socket.broadcast.emit('news', '哈哈哈哈')
       // socket.broadcast.emit('news')
-      socket.emit('news', data)
+      socket.emit('news', { ...data, i: ++i, id: socket.id })
 
       // socket.emit('news', data)
       // console.log('zzzz', {

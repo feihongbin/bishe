@@ -8,6 +8,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var groupRouter = require('./routes/group');
 var uploadRouter = require('./routes/upload');
+var voiceRouter = require('./routes/recognize');
+
 
 
 
@@ -77,6 +79,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/group', groupRouter);
 app.use('/upload', uploadRouter);
+app.use('/voice', voiceRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

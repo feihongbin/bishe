@@ -20,7 +20,7 @@ router.post('/info/setName', account.setName);
 router.post('/info/setSignature', account.setSignature);
 router.post('/info/setCareer', account.setCareer);
 router.post('/info/setAvatar', account.setAvatar);
-
+router.post('/info/setNote', account.setNote);
 
 
 
@@ -37,11 +37,23 @@ router.post('/contacts/getFriendList', account.getFriendList);
 router.post('/contacts/getGroupList', account.getGroupList);
 
 router.post('/contacts/updateGroupList', account.updateGroupList);
+router.post('/contacts/getGroup', account.getGroup);
+router.post('/contacts/changeGroup', account.changeGroup);
+
+router.post('/contacts/editGroup', account.editGroup);
+router.post('/contacts/deleteFriend', account.deleteFriend);
 
 
+router.post('/chat/setNotRead', account.setNotRead);
+router.post('/chat/deleteMessage', account.deleteMessage);
+router.post('/chat/setIsTop', account.setIsTop);
 router.post('/chat/friendInfo', account.getChatFriendInfo);
 router.post('/chat/sendMessage', account.sendMessage);
 router.post('/chat/saveHomeMessageList', account.saveHomeMessageList);
+router.post('/chat/clearNotRead', account.clearNotRead);
+
+
+
 
 
 module.exports = router;

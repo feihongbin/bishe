@@ -6,6 +6,12 @@ var group = require('../controller/group')
 router.post('/createGroup', group.newGroup);
 router.post('/getGroupInfo', group.getGroupInfo);
 router.post('/acceptGroupMessage', group.acceptGroupMessage);
+router.post('/isExist', group.groupIsExist);
+router.post('/editName', group.editName);
+router.post('/myName', group.myName); // 修改群昵称
+
+
+
 
 
 

@@ -116,10 +116,14 @@ let login = function (req, res, next) {
 }
 
 let getInfo = function (req, res, next) {
-  let { account } = req.body
+  let { account, isFriendId } = req.body
   if (isMobile(account)) {
     accountModel.find({ tel: account }, (err, data) => {
       if (data.length === 1 && data[0].tel === account) {
+        let isFriend = false
+        if (isFriendId) {
+          isFriend = data[0].friendsList.some(item => item.friendId === isFriendId)
+        }
         res.send({
           code: 200,
           msg: 'success',
@@ -133,7 +137,8 @@ let getInfo = function (req, res, next) {
             avatar: data[0].avatar,
             signature: data[0].signature,
             name: data[0].name
-          }
+          },
+          isFriend: isFriend
 
         })
       } else {
@@ -146,6 +151,10 @@ let getInfo = function (req, res, next) {
   } else {
     accountModel.find({ tid: account }, (err, data) => {
       if (data.length === 1 && data[0].tid === account) {
+        let isFriend = false
+        if (isFriendId) {
+          isFriend = data[0].friendsList.some(item => item.friendId === isFriendId)
+        }
         res.send({
           code: 200,
           msg: 'success',
@@ -159,7 +168,9 @@ let getInfo = function (req, res, next) {
             avatar: data[0].avatar,
             signature: data[0].signature,
             name: data[0].name
-          }
+          },
+          isFriend: isFriend
+
         })
       } else {
         res.send({
@@ -167,7 +178,6 @@ let getInfo = function (req, res, next) {
           msg: '出错了',
         })
       }
-
     })
   }
 }
@@ -255,18 +265,52 @@ let setAvatar = function (req, res, next) {
   let { account, avatar } = req.body
   if (isMobile(account)) {
     accountModel.updateOne({ tel: account }, { avatar: avatar }, (err, data) => {
-      res.send({
-        code: 200,
-        msg: 'success'
+      accountModel.find({ tel: account }, (err, data1) => {
+        for (let item of data1[0].friendsList) {
+          if (item.friendId) {
+            accountModel.updateOne({ tel: item.friendId, "friendsList.friendId": account }, { $set: { "friendsList.$.avatar": avatar } }, (err, data) => {
+
+            })
+            accountModel.updateOne({ tel: item.friendId, "messageList.friendId": account }, { $set: { "messageList.$.avatar": avatar } }, (err, data) => {
+
+            })
+          }
+        }
+        res.send({
+          code: 200,
+          msg: 'success',
+        })
       })
     })
   } else {
     accountModel.updateOne({ tid: account }, { avatar: avatar }, (err, data) => {
-      res.send({
-        code: 200,
-        msg: 'success',
+
+      accountModel.find({ tid: account }, (err, data1) => {
+        for (let item of data1[0].friendsList) {
+          if (item.friendId) {
+            accountModel.updateOne({ tid: item.friendId, "friendsList.friendId": account }, { $set: { "friendsList.$.avatar": avatar } }, (err, data) => {
+
+            })
+            accountModel.updateOne({ tid: item.friendId, "messageList.friendId": account }, { $set: { "messageList.$.avatar": avatar } }, (err, data) => {
+
+            })
+          }
+        }
+        // for(let item of data1[0].messageList){
+        //   if(item.friendId){
+        //     accountModel.updateOne({ tid: item.friendId, "friendsList.friendId": account }, { $set: { "friendsList.$.avatar": avatar } }, (err, data) => {
+
+        //     })
+        //   }
+        // }
+        res.send({
+          code: 200,
+          msg: 'success',
+        })
       })
+
     })
+
   }
 }
 let setName = function (req, res, next) {
@@ -396,6 +440,33 @@ let setNative = function (req, res, next) {
 }
 
 
+// 修改好友备注
+let setNote = function (req, res, next) {
+  let { account, note, friendId } = req.body
+  if (isMobile(account)) {
+
+    accountModel.updateOne({ tel: account, "friendsList.friendId": friendId }, { $set: { "friendsList.$.note": note, } }, (err, data) => {
+      accountModel.updateOne({ tid: account, "messageList.friendId": friendId }, { $set: { "messageList.$.sender": note, } }, (err, data) => {
+        res.send({
+          code: 200,
+          msg: 'success',
+        })
+      })
+    })
+  } else {
+    accountModel.updateOne({ tid: account, "friendsList.friendId": friendId }, { $set: { "friendsList.$.note": note, } }, (err, data) => {
+
+      accountModel.updateOne({ tid: account, "messageList.friendId": friendId }, { $set: { "messageList.$.sender": note, } }, (err, data) => {
+        res.send({
+          code: 200,
+          msg: 'success',
+        })
+      })
+
+
+    })
+  }
+}
 // 添加用户时判断用户存不存在
 let accountIsExist = function (req, res, next) {
   let { account } = req.body
@@ -491,7 +562,7 @@ let getFriendList = function (req, res, next) {
     accountModel.find({ tel: account }, (err, data) => {
       let groups = []
       for (let item of data[0].friendsList) {
-        if (!groups.includes(item.group)) {
+        if (!groups.includes(item.group) && item.group !== '') {
           groups.push(item.group)
         }
       }
@@ -500,13 +571,15 @@ let getFriendList = function (req, res, next) {
       })
       for (let item of data[0].friendsList) {
         groups.map((arr, i) => {
-          if (item.group === arr[0]) {
+          if (item.group === arr[0] && item.friendId !== "") {
             arr.push({
               friendId: item.friendId,
               avatar: item.avatar,
               note: item.note,
               name: item.name,
             })
+
+
             return arr
 
           }
@@ -515,7 +588,7 @@ let getFriendList = function (req, res, next) {
       res.send({
         code: 200,
         msg: 'success',
-        friendList: data[0].friendsList,
+        friendList: data[0].friendsList.filter(item => item.friendId !== ""),
         friendByGroup: groups
       })
     })
@@ -523,7 +596,7 @@ let getFriendList = function (req, res, next) {
     accountModel.find({ tid: account }, (err, data) => {
       let groups = []
       for (let item of data[0].friendsList) {
-        if (!groups.includes(item.group)) {
+        if (!groups.includes(item.group) && item.group !== '') {
           groups.push(item.group)
         }
       }
@@ -532,7 +605,7 @@ let getFriendList = function (req, res, next) {
       })
       for (let item of data[0].friendsList) {
         groups.map((arr, i) => {
-          if (item.group === arr[0]) {
+          if (item.group === arr[0] && item.friendId !== "") {
             arr.push({
               friendId: item.friendId,
               avatar: item.avatar,
@@ -547,7 +620,7 @@ let getFriendList = function (req, res, next) {
       res.send({
         code: 200,
         msg: 'success',
-        friendList: data[0].friendsList,
+        friendList: data[0].friendsList.filter(item => item.friendId !== ""),
         friendByGroup: groups
       })
     })
@@ -593,8 +666,9 @@ let getHomeMessageList = function (req, res, next) {
     accountModel.find({ tel: account }, null, { sort: { 'messageList.lastDate': -1 } }, (err, data) => {
       let message = data[0].messageList
       message.sort((obj1, obj2) => {
-        return obj1.lastDate > obj2.lastDate ? 1 : -1
+        return obj1.lastDate - obj2.lastDate > 0 ? -1 : 1
       })
+
       let result = []
       message.forEach(element => {
         if (element.isTop) {
@@ -614,8 +688,9 @@ let getHomeMessageList = function (req, res, next) {
 
       let message = data[0].messageList
       message.sort((obj1, obj2) => {
-        return obj1.lastDate > obj2.lastDate ? 1 : -1
+        return obj1.lastDate - obj2.lastDate > 0 ? -1 : 1
       })
+
       let result = []
       message.forEach(element => {
         if (element.isTop) {
@@ -720,6 +795,152 @@ let getNewFriendDetail = function (req, res, next) {
     })
   }
 }
+
+// 获取好友分组
+let getGroup = function (req, res, next) {
+  let { account } = req.body
+
+  if (isMobile(account)) {
+    accountModel.find({ tel: account }, (err, data) => {
+      let arr = []
+      data[0].friendsList.forEach(item => {
+        if (!arr.includes(item.group) && item.group !== '') {
+          arr.push(item.group)
+        }
+      })
+      res.send({
+        code: 200,
+        msg: 'success',
+        groupList: arr
+      })
+    })
+
+
+  } else {
+    accountModel.find({ tid: account }, (err, data) => {
+      let arr = []
+      data[0].friendsList.forEach(item => {
+        if (!arr.includes(item.group) && item.group !== '') {
+          arr.push(item.group)
+        }
+      })
+      res.send({
+        code: 200,
+        msg: 'success',
+        groupList: arr
+      })
+    })
+  }
+
+}
+
+// 将好友移至其他分组
+let changeGroup = function (req, res, next) {
+  let { account, newGroup, friendId } = req.body
+  if (isMobile(account)) {
+    accountModel.updateOne({ tel: account, "friendsList.friendId": friendId }, { $set: { "friendsList.$.group": newGroup } }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+  } else {
+    accountModel.updateOne({ tid: account, "friendsList.friendId": friendId }, { $set: { "friendsList.$.group": newGroup } }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+  }
+
+}
+// 编辑好友分组
+let editGroup = function (req, res, next) {
+  let { account, newGroupName, oldGroupName, isAdd, isDelete } = req.body
+  if (isMobile(account)) {
+    accountModel.find({ tid: account }, (err, data1) => {
+      if (!isAdd) {
+        data1[0].friendsList.forEach(item => {
+          if (item.group === oldGroupName) {
+            item.group = newGroupName
+          }
+        })
+      } else {
+        console.log(data1)
+
+        data1[0].friendsList.push({
+          friendId: '',
+          avatar: '',
+          name: '',
+          note: '',
+          group: newGroupName,
+          receiveSetting: 1,
+          messages: []
+        })
+      }
+
+      accountModel.updateOne({ tid: account }, { friendsList: data1[0].friendsList }, (err, data) => {
+        let arr = []
+        data1[0].friendsList.forEach(item => {
+          if (!arr.includes(item.group) && item.group !== '') {
+            arr.push(item.group)
+          }
+        })
+        res.send({
+          code: 200,
+          msg: 'success',
+          groupList: arr
+        })
+      })
+    })
+
+  } else {
+    accountModel.find({ tid: account }, (err, data1) => {
+      if (isDelete) {
+        data1[0].friendsList.forEach(item => {
+          if (item.group === oldGroupName) {
+            console.log(item.group)
+            item.group = ''
+          }
+        })
+      }
+      if (!isAdd) {
+        data1[0].friendsList.forEach(item => {
+          if (item.group === oldGroupName) {
+            item.group = newGroupName
+          }
+        })
+      } else {
+
+        data1[0].friendsList.push({
+          friendId: '',
+          avatar: '',
+          name: '',
+          note: '',
+          group: newGroupName,
+          receiveSetting: 1,
+          messages: []
+        })
+      }
+
+      accountModel.updateOne({ tid: account }, { friendsList: data1[0].friendsList }, (err, data) => {
+        let arr = []
+        data1[0].friendsList.forEach(item => {
+          if (!arr.includes(item.group) && item.group !== '') {
+            arr.push(item.group)
+          }
+        })
+        res.send({
+          code: 200,
+          msg: 'success',
+          groupList: arr
+        })
+      })
+    })
+  }
+
+}
+
 
 // 同意好友申请
 let friendAgree = function (req, res, next) {
@@ -868,10 +1089,11 @@ let sendMessage = function (req, res, next) {
 let saveHomeMessageList = function (req, res, next) {
   let { account, friendId } = req.body
   let body = req.body
-
+  let originNotRead = 0
   if (isMobile(account)) {
     accountModel.find({ tel: account, "messageList.friendId": friendId }, (err, data) => {
       if (data.length > 0) {
+        console.log('ax', data[0])
         accountModel.updateOne({ tel: account }, { "$pull": { messageList: { friendId: friendId } } }, (err) => {
           if (err) {
             console.log(err)
@@ -892,6 +1114,7 @@ let saveHomeMessageList = function (req, res, next) {
   } else {
     accountModel.find({ tid: account, "messageList.friendId": friendId }, (err, data) => {
       if (data.length > 0) {
+        originNotRead = data[0].messageList.find(item => item.friendId === friendId).notRead + 1
         accountModel.updateOne({ tid: account }, { "$pull": { messageList: { friendId: friendId } } }, (err) => {
           if (err) {
             console.log(err)
@@ -899,7 +1122,7 @@ let saveHomeMessageList = function (req, res, next) {
         })
       }
 
-      accountModel.updateOne({ tid: account }, { "$push": { messageList: body } }, (err) => {
+      accountModel.updateOne({ tid: account }, { "$push": { messageList: { ...body, notRead: originNotRead } } }, (err) => {
         if (err) {
           console.log(err)
         }
@@ -912,6 +1135,7 @@ let saveHomeMessageList = function (req, res, next) {
   }
 }
 
+// 更新群聊信息
 let updateGroupList = function (req, res, next) {
   let { group } = req.body
   console.log('group', group)
@@ -974,6 +1198,119 @@ let updateGroupList = function (req, res, next) {
     })
   }
 }
+let deleteFriend = function (req, res, next) {
+  let { account, friendId } = req.body
+  if (isMobile(account)) {
+    accountModel.updateOne({ tel: account }, { "$pull": { friendsList: { friendId: friendId } } }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: '删除好友成功'
+      })
+    })
+  } else {
+    accountModel.updateOne({ tid: account }, { "$pull": { friendsList: { friendId: friendId } } }, (err, data) => {
+      console.log(data)
+      res.send({
+        code: 200,
+        msg: '删除好友成功'
+      })
+    })
+  }
+}
+
+let clearNotRead = function (req, res, next) {
+  let { account, friendId } = req.body
+  if (isMobile(account)) {
+    accountModel.updateOne({ tel: account, "messageList.friendId": friendId }, { $set: { "messageList.$.notRead": 0 } }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+
+  } else {
+    accountModel.updateOne({ tid: account, "messageList.friendId": friendId }, { $set: { "messageList.$.notRead": 0 } }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+
+  }
+}
+
+let setIsTop = function (req, res, next) {
+  let { account, friendId, isTop } = req.body
+  if (isMobile(account)) {
+    accountModel.updateOne({ tel: account, "messageList.friendId": friendId }, { $set: { "messageList.$.isTop": !isTop } }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success',
+        isTop: !isTop
+      })
+    })
+
+  } else {
+    accountModel.updateOne({ tid: account, "messageList.friendId": friendId }, { $set: { "messageList.$.isTop": !isTop } }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success',
+        isTop: !isTop
+      })
+    })
+
+  }
+}
+
+let setNotRead = function (req, res, next) {
+  let { account, friendId, notRead } = req.body
+  if (isMobile(account)) {
+    accountModel.updateOne({ tel: account, "messageList.friendId": friendId }, { $set: { "messageList.$.notRead": notRead } }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+
+  } else {
+    accountModel.updateOne({ tid: account, "messageList.friendId": friendId }, { $set: { "messageList.$.notRead": notRead } }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+
+  }
+}
+
+let deleteMessage = function (req, res, next) {
+  let { account, friendId } = req.body
+  if (isMobile(account)) {
+    accountModel.find({ tel: account, "messageList.friendId": friendId }, (err, data) => {
+      if (data.length > 0) {
+        accountModel.updateOne({ tel: account }, { "$pull": { messageList: { friendId: friendId } } }, (err) => {
+          res.send({
+            code: 200,
+            msg: 'success'
+          })
+        })
+      }
+
+    })
+  } else {
+    accountModel.find({ tid: account, "messageList.friendId": friendId }, (err, data) => {
+      if (data.length > 0) {
+        accountModel.updateOne({ tid: account }, { "$pull": { messageList: { friendId: friendId } } }, (err) => {
+          res.send({
+            code: 200,
+            msg: 'success'
+          })
+        })
+      }
+
+    })
+  }
+}
 module.exports = {
   sendPhoneCode,
   newAccount,
@@ -1002,5 +1339,14 @@ module.exports = {
   setSignature,
   setName,
   setCareer,
-  setAvatar
+  setAvatar,
+  editGroup,
+  getGroup,
+  setNote,
+  changeGroup,
+  deleteFriend,
+  clearNotRead,
+  setIsTop,
+  setNotRead,
+  deleteMessage
 }

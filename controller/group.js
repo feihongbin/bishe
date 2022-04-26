@@ -105,8 +105,57 @@ let acceptGroupMessage = function (req, res, next) {
   })
 }
 
+
+// 添加群聊时判断用户存不存在
+let groupIsExist = function (req, res, next) {
+  let { account } = req.body
+
+  groupModel.find({ groupId: account }, (err, data) => {
+    if (data.length > 0) {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    } else {
+      res.send({
+        code: 400,
+        msg: '群聊不存在'
+      })
+    }
+  })
+
+}
+
+// 修改群聊名称
+let editName = function (req, res, next) {
+  let { groupId, name } = req.body
+  console.log(groupId, name)
+  groupModel.updateOne({ groupId: groupId }, { groupName: name }, (err) => {
+    if (err) {
+      console.log(err)
+    }
+    res.send({
+      code: 200,
+      msg: 'success'
+    })
+  })
+}
+
+let myName = function (req, res, next) {
+  let { groupId, name, account } = req.body
+
+  groupModel.updateOne({ groupId: groupId, "members.member": account }, { $set: { "members.$.groupNote": name, } }, (err, data) => {
+    res.send({
+      code: 200,
+      msg: 'success'
+    })
+  })
+}
 module.exports = {
   newGroup,
   getGroupInfo,
-  acceptGroupMessage
+  acceptGroupMessage,
+  groupIsExist,
+  editName,
+  myName
 }
