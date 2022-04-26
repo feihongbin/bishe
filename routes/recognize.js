@@ -22,7 +22,7 @@ var client = new AipSpeechClient(APP_ID, API_KEY, SECRET_KEY);
 
 // console.log(voice, voiceBuffer)
 // // // // 识别本地文件，附带参数
-// client.recognize(voiceBuffer, 'amr', 16000, { dev_pid: 1537 }).then(function (result) {
+// client.recognize(voiceBuffer, 'pcm', 16000, { dev_pid: 1537 }).then(function (result) {
 //   console.log('<recognize>: ' + JSON.stringify(result));
 // }, function (err) {
 //   console.log(err);
