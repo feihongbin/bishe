@@ -47,12 +47,45 @@ const AccountSchema = mongodb.Schema({
   },
   friendsList: {
     type: Array,
-    default: []
+    default: [
+      {
+        friendId: '',
+        avatar: '',
+        name: '',
+        group: '我的好友',
+        receiveSetting: 1,
+        messages: []
+      },
+      {
+        friendId: '',
+        avatar: '',
+        name: '',
+        group: '朋友',
+        receiveSetting: 1,
+        messages: []
+      },
+      {
+        friendId: '',
+        avatar: '',
+        name: '',
+        group: '家人',
+        receiveSetting: 1,
+        messages: []
+      },
+      {
+        friendId: '',
+        avatar: '',
+        name: '',
+        group: '同学',
+        receiveSetting: 1,
+        messages: []
+      }
+    ]
   },
-  friendGroups: {
-    type: Array,
-    default: []
-  },
+  // friendGroups: {
+  //   type: Array,
+  //   default: []
+  // },
   groupList: {
     type: Array,
     default: []
@@ -62,6 +95,10 @@ const AccountSchema = mongodb.Schema({
     default: []
   },
   toBeConfirmed: {
+    type: Array,
+    default: []
+  },
+  groupRequest: {
     type: Array,
     default: []
   }

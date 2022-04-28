@@ -10,6 +10,8 @@ router.post('/isExist', group.groupIsExist);
 router.post('/editName', group.editName);
 router.post('/myName', group.myName); // 修改群昵称
 
+router.post('/quitGroup', group.quitGroup);
+router.post('/groupAddAccount', group.groupAddAccount);
 
 
 

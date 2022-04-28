@@ -4,6 +4,8 @@ const account = require('../controller/account')
 
 
 // router.post('/login', account.login);
+router.post('/getPhone', account.getPhone);
+router.post('/changePsw', account.changePsw);
 
 router.post('/registerCode', account.sendPhoneCode);
 router.post('/register', account.newAccount);
@@ -29,9 +31,12 @@ router.post('/isExist', account.accountIsExist);
 router.post('/addFriend/sendRequest', account.sendAddFriendRequest);
 router.post('/addFriend/agree', account.friendAgree);
 
+
 router.post('/home/messageList', account.getHomeMessageList);
 router.post('/home/newFriendCount', account.getNewFriendCount);
 router.post('/home/newFriendList', account.getNewFriendList);
+router.post('/home/newGroupList', account.getNewGroupList);
+
 router.post('/home/newFriendDetail', account.getNewFriendDetail);
 router.post('/contacts/getFriendList', account.getFriendList);
 router.post('/contacts/getGroupList', account.getGroupList);
@@ -51,6 +56,15 @@ router.post('/chat/friendInfo', account.getChatFriendInfo);
 router.post('/chat/sendMessage', account.sendMessage);
 router.post('/chat/saveHomeMessageList', account.saveHomeMessageList);
 router.post('/chat/clearNotRead', account.clearNotRead);
+
+router.post('/chat/changeGroupRemind', account.changeGroupRemind);
+
+
+router.post('/quitGroup', account.quitGroup);
+router.post('/groupRequest', account.groupRequest);
+router.post('/accountJoinGroup', account.accountJoinGroup);
+router.post('/updateGroupRequest', account.updateGroupRequest);
+
 
 
 

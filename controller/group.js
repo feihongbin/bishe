@@ -82,6 +82,9 @@ let getGroupInfo = function (req, res, next) {
         return item
       }
     })
+    let members = data[0].members.filter(item => item.isAlive)
+    data[0].members = members
+    console.log(members)
     res.send({
       code: 200,
       msg: 'success',
@@ -151,11 +154,59 @@ let myName = function (req, res, next) {
     })
   })
 }
+let quitGroup = function (req, res, next) {
+  let { groupId, account } = req.body
+
+  groupModel.updateOne({ groupId: groupId, "members.member": account }, { "$set": { 'members.$.isAlive': false } }, (err) => {
+    res.send({
+      code: 200,
+      msg: '退群成功'
+    })
+  })
+}
+
+
+// 添加成员
+
+let groupAddAccount = function (req, res, next) {
+  let { groupId, member, permission, groupNote, isAlive, avatar } = req.body
+
+  let objectItem = {
+    member,
+    permission,
+    groupNote,
+    isAlive,
+    avatar
+  }
+
+  groupModel.find({ groupId: groupId, "members.member": member }, (err, data) => {
+    if (data.length > 0) {
+      groupModel.updateOne({ groupId: groupId }, { "$pull": { members: { member: member } } }, (err) => {
+        if (err) {
+          console.log(err)
+        }
+      })
+    }
+
+    groupModel.updateOne({ groupId: groupId }, { "$push": { members: objectItem } }, (err) => {
+      if (err) {
+        console.log(err)
+      }
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+  })
+}
+
 module.exports = {
   newGroup,
   getGroupInfo,
   acceptGroupMessage,
   groupIsExist,
   editName,
-  myName
+  myName,
+  quitGroup,
+  groupAddAccount
 }

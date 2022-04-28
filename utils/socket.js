@@ -3,6 +3,7 @@ module.exports = function (io) {
   let socketList = {}
   let member = 0
   let i = 0
+  // newGroupRequest
 
   io.sockets.on('connection', socket => {
     console.log('socket', socket.id)
@@ -35,6 +36,18 @@ module.exports = function (io) {
     socket.on('updateMessageList', data => {
       socket.broadcast.emit('toUpdateMessageList')
       socket.emit('toUpdateMessageList')
+    })
+
+    socket.on('newGroupRequest', data => {
+      socket.broadcast.emit('toUpdateMessageList')
+      // socket.emit('toUpdateMessageList')
+    })
+
+    // 添加好友
+    socket.on('agreeNewFriend', data => {
+      console.log(data)
+      socket.broadcast.emit('newFriendAgreed')
+      socket.emit('newFriendAgreed')
     })
 
     // 创建群聊
