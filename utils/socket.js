@@ -84,6 +84,21 @@ module.exports = function (io) {
 
     })
 
+
+    // 音视频聊天
+    socket.on('vedioInvite', data => {
+      console.log('asdas', data)
+      socket.broadcast.emit('getVedioInvite', data)
+    })
+
+    // 接收与拒绝音视频聊天
+    socket.on('rejustVedioInvite', () => {
+      socket.broadcast.emit('rejust')
+    })
+
+    socket.on('acceptVedioInvite', () => {
+      socket.broadcast.emit('accept')
+    })
   })
 
 }
