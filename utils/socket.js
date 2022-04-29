@@ -65,8 +65,8 @@ module.exports = function (io) {
         permission: 2
       })
 
-      let obj = { members: arr, groupId: data.groupId, groupName: data.groupName }
-
+      let obj = { members: arr, groupId: data.groupId, groupName: data.groupName, groupAvatar: data.groupAvatar }
+      console.log('2131', obj, data)
       // socket.broadcast.emit('updateGroupList', obj)
       socket.emit('updateGroupList', obj)
     })
@@ -79,6 +79,7 @@ module.exports = function (io) {
 
     // 发送群聊消息后更新群聊消息
     socket.on('updateGroupMessageList', data => {
+      console.log('23124', data)
       socket.broadcast.emit('getUpdatedGroupMessage', data)
       socket.emit('getUpdatedGroupMessage', data)
 

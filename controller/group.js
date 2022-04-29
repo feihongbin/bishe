@@ -32,7 +32,9 @@ let newGroup = function (req, res, next) {
       member: item.friendId,
       avatar: item.avatar,
       permission: 0,
-      groupNote: item.name
+      groupNote: item.name,
+      isAlive: true
+
     }
   })
 
@@ -40,7 +42,8 @@ let newGroup = function (req, res, next) {
     member: leader.account,
     permission: 2,
     groupNote: leader.name,
-    avatar: leader.avatar
+    avatar: leader.avatar,
+    isAlive: true
   })
   const group = new groupModel({
     groupId: id,
@@ -59,7 +62,8 @@ let newGroup = function (req, res, next) {
       code: 200,
       msg: 'success',
       groupId: id,
-      groupName: groupName.join('、')
+      groupName: groupName.join('、'),
+      groupAvatar: 'https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/avatar/1.jpeg'
     });
   })
 }
@@ -72,7 +76,7 @@ let getGroupInfo = function (req, res, next) {
     let map = new Map(m.map(item => [item.member, [item.avatar, item.groupNote]]))
 
     let newMessageList = ml.map(item => {
-      if (item.tag !== 'time') {
+      if (item.tag !== 'time' && item.tag !== 'welcome') {
         return {
           ...item,
           avatar: map.get(item.sender)[0],
@@ -199,6 +203,16 @@ let groupAddAccount = function (req, res, next) {
     })
   })
 }
+let changePermission = function (req, res, next) {
+  let { groupId, account, permission } = req.body
+
+  groupModel.updateOne({ groupId: groupId, "members.member": account }, { $set: { "members.$.permission": permission, } }, (err, data) => {
+    res.send({
+      code: 200,
+      msg: 'success'
+    })
+  })
+}
 
 module.exports = {
   newGroup,
@@ -208,5 +222,6 @@ module.exports = {
   editName,
   myName,
   quitGroup,
-  groupAddAccount
+  groupAddAccount,
+  changePermission
 }

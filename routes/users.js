@@ -64,6 +64,8 @@ router.post('/quitGroup', account.quitGroup);
 router.post('/groupRequest', account.groupRequest);
 router.post('/accountJoinGroup', account.accountJoinGroup);
 router.post('/updateGroupRequest', account.updateGroupRequest);
+router.post('/changePermission', account.changePermission);
+
 
 
 

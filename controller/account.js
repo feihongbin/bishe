@@ -118,11 +118,11 @@ let login = function (req, res, next) {
   let { account, password } = req.body
   if (isMobile(account)) {
     accountModel.find({ tel: account }, (err, data) => {
-      if (data.length === 1 && data[0].password === password && data[0].tel === account) {
+      if (data.length > 0 && data[0].password === password && data[0].tel === account) {
         res.send({
           code: 200,
           msg: '登录成功',
-          account: account
+          account: data[0].tid
 
         })
       } else {
@@ -180,7 +180,8 @@ let getInfo = function (req, res, next) {
             name: data[0].name
           },
           isFriend: isFriend,
-          groupList: data[0].groupList
+          groupList: data[0].groupList,
+          friendsList: data[0].friendsList
         })
       } else {
         res.send({
@@ -211,7 +212,8 @@ let getInfo = function (req, res, next) {
             name: data[0].name
           },
           isFriend: isFriend,
-          groupList: data[0].groupList
+          groupList: data[0].groupList,
+          friendsList: data[0].friendsList
 
         })
       } else {
@@ -1251,7 +1253,7 @@ let updateGroupList = function (req, res, next) {
     groupName: group.groupName,
     permission: group.permission,
     receiveSetting: 1,
-    groupAvatar: 'https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/avatar/timg%20%281%29.jpg'
+    groupAvatar: group.groupAvatar
   }
   if (isMobile(group.account)) {
     // accountModel.find({ tel: account, "groupList.group": data.groupId }, (err, data) => {
@@ -1627,6 +1629,25 @@ let updateGroupRequest = function (req, res, next) {
   }
 
 }
+
+let changePermission = function (req, res, next) {
+  let { account, group, permission } = req.body
+  if (isMobile(account)) {
+    accountModel.updateOne({ tel: account, "groupList.group": group }, { $set: { "groupList.$.permission": permission } }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+  } else {
+    accountModel.updateOne({ tid: account, "groupList.group": group }, { $set: { "groupList.$.permission": permission } }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+  }
+}
 module.exports = {
   sendPhoneCode,
   newAccount,
@@ -1672,5 +1693,6 @@ module.exports = {
   accountJoinGroup,
   updateGroupRequest,
   getPhone,
-  changePsw
+  changePsw,
+  changePermission
 }
