@@ -1648,6 +1648,27 @@ let changePermission = function (req, res, next) {
     })
   }
 }
+
+let editGroupName = function (req, res, next) {
+  let { account, groupId, name } = req.body
+  if (isMobile(account)) {
+    accountModel.updateOne({ tel: account, "groupList.group": groupId }, { $set: { "groupList.$.groupName": name } }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+  } else {
+    accountModel.updateOne({ tid: account, "groupList.group": groupId }, { $set: { "groupList.$.groupName": name } }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success'
+      })
+    })
+  }
+
+}
+
 module.exports = {
   sendPhoneCode,
   newAccount,
@@ -1694,5 +1715,6 @@ module.exports = {
   updateGroupRequest,
   getPhone,
   changePsw,
-  changePermission
+  changePermission,
+  editGroupName
 }

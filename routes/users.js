@@ -67,6 +67,9 @@ router.post('/updateGroupRequest', account.updateGroupRequest);
 router.post('/changePermission', account.changePermission);
 
 
+router.post('/editGroupName', account.editGroupName);
+
+
 
 
 
