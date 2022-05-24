@@ -67,14 +67,14 @@
 		},
 		filters: {
 			isNumberOverflow(num) {
-				return num > 99 ? '99+' : num
+				return Number.parseInt(num) > 99 ? '99+' : num
 			}
 		},
 		data() {
 			return {
 				navItems: ['chatbubble-filled', 'staff', 'person'],
 				notReadMessages: 123,
-				newFriends: 0,
+				newFriends: '0',
 				show: false,
 				messageList:[],
 				navMap: new Map([
@@ -125,7 +125,11 @@
 							},
 							success: (data) => {
 								that.messageList = data.data.messageList
-								console.log(data.data.messageList)
+								that.notReadMessages = 0
+								for(let item of that.messageList){
+									that.notReadMessages += item.notRead 
+								}
+								console.log(that.notReadMessages)
 							}
 						})
 					}
@@ -199,23 +203,47 @@
 			this.getMessageList(),
 			this.watchNewFriend(),
 			this.getNewFriendCount()
-			
-			this.socket.on('toUpdateMessageList',(data)=>{
-				this.getMessageList()
-				// let that = this
-				// uni.getStorage({
-				// 	key:'accountId',
-				// 	success(res) {
-				// 		if(data.account === res.data || data.friendId === res.data){
-				// 			that.getMessageList()
-				// 		}
-				// 	}
-				// })
+			uni.$on('refreshContacts',()=>{
+				// this.watchNewFriend()
+				console.log(99)
+				this.getNewFriendCount()
+			}),
+			// 接收音视频邀请
+			this.socket.on('getVedioInvite',data => {
+				console.log('213',data)
+				
+				let oInfo = JSON.stringify({
+					appid:data.appid,
+					channel:data.channel,
+					token:'',
+					uid:data.account,
+					scenario:data.scenario,
+					liveUrl:data.liveUrl
+				})
+				
+				
+				uni.navigateTo({
+					url: `/pages/index/rtcPage?tag=0&friendId=${data.channel}&info=${oInfo}`,
+				});
 			})
+			uni.$on('refreshHomeMessage',()=>{
+				this.getMessageList()
+			})
+			this.socket.on('toUpdateMessageList',(data)=>{
+				console.log(233212)
+				this.getMessageList()
+			
+			})
+			// this.socket.on('updateContactsList',()=>{
+				
+			// })
+		
 		},
 		
-		onBackPress() {
+		onUnload() {
+			// this.socket.removeAllListeners('toUpdateMessageList')
 			
+			// this.socket.removeAllListeners('newFriendRequest')
 		}
 	
 	}

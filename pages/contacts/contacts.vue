@@ -15,7 +15,7 @@
 		</view>
 		<view class="friendsTab">
 			<u-tabs :list="list" lineWidth="30" :activeStyle="{color:'#3c91ff'}" @click="tabClick"></u-tabs>
-			<friend-list :indexList="indexList" :itemArr="itemArr" v-if="currentTab === 0 && friendList.length > 0"></friend-list>
+			<friend-list :list="friendList" v-if="currentTab === 0 && friendList.length > 0"></friend-list>
 			<group :list="friendByGroup" :currentTab="currentTab" v-if="currentTab === 1"></group>
 			<group :list="groupByGroup" :currentTab="currentTab" v-if="currentTab === 2"></group>
 		</view>
@@ -54,7 +54,7 @@
 				]),
 				navItems: ['chatbubble-filled', 'staff', 'person'],
 				notReadMessages: 123,
-				newFriends: 0,
+				newFriends: '0',
 				friendList:[],
 				indexList:[],
 				itemArr:[],
@@ -81,6 +81,11 @@
 			
 			
 			checkNewFriend(){
+				this.newFriends = '0'
+				uni.setStorage({
+					key:'newFriendCount',
+					data:'0',
+				})
 				uni.navigateTo({
 					url:'/pages/contacts/addFriend/newFriends'
 				})
@@ -144,11 +149,12 @@
 									account: res.data,
 								},
 								success: (data) => {
-									that.friendList = that.fixTheSearchTeachers(that.filterFriendList(data.data.friendList))
-									that.indexList = that.friendList.map((item,index)=>item[0])
-									that.itemArr = that.friendList.map((item,index) => item.slice(1))
+									// that.friendList = that.fixTheSearchTeachers(that.filterFriendList(data.data.friendList))
+									that.friendList = data.data.friendList
+									// that.indexList = that.friendList.map((item,index)=>item[0])
+									// that.itemArr = that.friendList.map((item,index) => item.slice(1))
 									that.friendByGroup = data.data.friendByGroup
-									console.log(data.data.friendByGroup)
+									console.log(that.friendList )
 								}
 							})
 						}
@@ -183,12 +189,26 @@
 	
 		
 		},
+		created() {
+			uni.$on('refreshFriend',()=>{
+				this.getFriendList()
+			})
+		},
 		mounted() {
 			this.getFriendList(),
 			this.getNewFriendCount(),
 			this.getGroupList()
-
-		}
+		
+			// uni.$on('refreshContacts',()=>{
+			// 	this.getFriendList(),
+			// 	this.getNewFriendCount(),
+			// 	this.getGroupList()
+			// })
+		},
+		// destroyed() {
+		// 	uni.$off('refreshContacts')
+		// }
+		
 	}
 </script>
 

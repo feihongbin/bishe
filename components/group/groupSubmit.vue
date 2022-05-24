@@ -25,8 +25,8 @@
 
 <script>
 	import Emoji from '../submitInput/emoji.vue'
-	import Speak from '../submitInput/speaking.vue'
-	import More from '../submitInput/more.vue'
+	import Speak from '@/components/group/groupSpeaking.vue'
+	import More from '@/components/group/groupMore.vue'
 	export default {
 		name: "sendMessageInput",
 		data() {

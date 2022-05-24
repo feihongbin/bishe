@@ -2,21 +2,21 @@
 	<view class="groupIntroduceContainer">
 		<view class="groupCard">
 			<view class="card">
-				<image src="../../static/logo.png" mode=""></image>
+				<image :src="groupInfo.groupAvatar" mode=""></image>
 				<view class="info">
-					<text class="name">这是一个很正经的群聊</text>
-					<text class="id">735621540</text>
+					<text class="name">{{groupInfo.groupName}}</text>
+					<text class="id">{{groupInfo.groupId}}</text>
 				</view>
 			</view>
-			<text class="date">本群创建于2021年10月22日</text>
+			<text class="date">本群创建于{{new Date(Number.parseInt(groupInfo.createDate)).getFullYear()}}年{{new Date(Number.parseInt(groupInfo.createDate)).getMonth()}}月{{new Date(Number.parseInt(groupInfo.createDate)).getDate()}}日</text>
 		</view>
 		
-		<view class="memberInfo">
+		<!-- <view class="memberInfo">
 			<view class="">
 				<view class="title">
 					<text>成员概况</text>
 					<view class="count">
-						<text>2人</text>
+						<text>{{groupInfo.members.length}}</text>
 						<u-icon name="arrow-right" size="16" color="#ccc" style="margin-right: 10px;"></u-icon>
 					</view>
 				</view>
@@ -26,13 +26,12 @@
 			</view>
 			<view class="cardList">
 			</view>
-		</view>
+		</view> -->
 		
 		<view class="manager">
 			<text class="label">管理员</text>
 			<view class="imgs">
-				<image src="../../static/logo.png" mode=""></image>
-				<image src="../../static/logo.png" mode=""></image>
+				<image v-for="(item,index) in groupInfo.members.filter(m => m.permission!==0)" :key="index" :src="item.avatar" mode=""></image>
 			</view>
 			<view class="count">
 				<text>共1人</text>
@@ -40,8 +39,11 @@
 			</view>
 		</view>
 		
-		<view class="btns">
-			<button type="primary">发消息</button>
+		<view class="btns" v-if="isJioned">
+			<button type="primary" @click="toSendMessage">发消息</button>
+		</view>
+		<view class="btns" v-if="!isJioned">
+			<button type="primary" @click="toSendQuest">申请加入</button>
 		</view>
 	</view>
 </template>
@@ -50,7 +52,53 @@
 	export default{
 		data(){
 			return{
+				groupId:'',
+				groupInfo:{},
+				account:''
+			}
+		},
+		computed:{
+			isJioned(){
+				return this.groupInfo.members.some(item => item.member == this.account && item.isAlive) ? true : false
+			}
+		},
+		onLoad(option) {
+			this.groupId = option.id
+			this.getGroupInfo()
+			
+		},
+		methods:{
+	
+		 getGroupInfo(){
+				try {
+					const value = uni.getStorageSync('accountId');
+					if (value) {
+						this.account = value
+					}
+				} catch (e) {
+					// error
+				}
 				
+				uni.request({
+					url: this.$baseUrl + '/group/getGroupInfo',
+					method: 'post',
+					data: {
+						groupId:this.groupId
+					},
+					success: (data) => {
+						this.groupInfo = data.data.groupInfo
+					}
+				})
+			},
+			toSendQuest(){
+				uni.navigateTo({
+					url:`./sendGroupRequest/sendGroupRequest?account=${this.account}&groupId=${this.groupId}`
+				})
+			},
+			toSendMessage(){
+				uni.navigateTo({
+					url:`/pages/chat/groupChatPage?groupName=${this.groupInfo.groupName}&groupId=${this.groupInfo.groupId}`
+				})
 			}
 		}
 	}

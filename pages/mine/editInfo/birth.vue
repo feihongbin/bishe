@@ -3,11 +3,11 @@
 		<view class="birthDate">
 			<view class="birthItem" @click="open">
 				<text class="birthLabel">年龄</text>
-				<text class="birthContent">{{age}}</text>
+				<text class="birthContent">{{age || ''}}</text>
 			</view>
 			<view class="birthItem" @click="open">
 				<text class="birthLabel">星座</text>
-				<text class="birthContent">{{astro}}</text>
+				<text class="birthContent">{{age ? astro : ''}}</text>
 			</view>
 		</view>
 		<u-datetime-picker :show="show" v-model="date" mode="date" @cancel="cancel()" @confirm="confirm">

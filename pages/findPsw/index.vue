@@ -6,7 +6,7 @@
 			<input id='account' type="text" v-model="account" placeholder="账号/手机号" />
 		</view>
 		
-		<button type="primary" :disabled="account.length<=0" @click="next">下一步</button>
+		<button type="primary" :disabled="account.length !== 8 && account.length !== 11" @click="next">下一步</button>
 	</view>
 </template>
 
@@ -20,7 +20,7 @@
 		methods:{
 			next(){
 				uni.navigateTo({
-					url:'./phone'
+					url:`./phone?account=${this.account}`
 				})
 			}
 		}

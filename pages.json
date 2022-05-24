@@ -25,7 +25,7 @@
 			}
 
 		},
-		 {
+		{
 			"path": "pages/home/home",
 			"style": {
 				// "navigationBarTitleText": "",
@@ -33,7 +33,16 @@
 				"navigationStyle": "custom"
 			}
 
-		}, {
+		},
+		{
+			"path": "pages/home/homeSearch",
+			"style": {
+				// "navigationBarTitleText": "",
+				// "enablePullDownRefresh": false
+				"navigationStyle": "custom"
+			}
+		
+		},{
 			"path": "pages/chat/chatPage",
 			"style": {
 				// "navigationBarTitleText": "",
@@ -52,7 +61,7 @@
 			}
 
 		}, {
-			"path": "pages/chat/chatSetting",
+			"path": "pages/chat/friend/chatSetting",
 			"style": {
 				"navigationBarTitleText": "聊天设置",
 				"enablePullDownRefresh": false
@@ -60,7 +69,28 @@
 				// "softinputMode":"adjustResize"
 			}
 
-		}, {
+		},
+		{
+			"path": "pages/chat/friend/noteChange",
+			"style": {
+				// "navigationBarTitleText": "聊天设置",
+				// "enablePullDownRefresh": false
+				"navigationStyle": "custom"
+				// "softinputMode":"adjustResize"
+			}
+
+		},
+		{
+			"path": "pages/chat/friend/groupChange",
+			"style": {
+				"navigationBarTitleText": "移至分组",
+				"enablePullDownRefresh": false
+				// "navigationStyle":"custom"
+				// "softinputMode":"adjustResize"
+			}
+
+		},
+		{
 			"path": "pages/findPsw/index",
 			"style": {
 				"navigationBarTitleText": "",
@@ -157,7 +187,7 @@
 				// "navigationBarTitleText": "新朋友",
 				// "enablePullDownRefresh": false
 				"navigationStyle": "custom"
-		 }
+			}
 
 		},
 		{
@@ -165,7 +195,7 @@
 			"style": {
 				"navigationBarTitleText": "设置密码",
 				"enablePullDownRefresh": false
-		 }
+			}
 
 		}, {
 			"path": "pages/findPsw/success",
@@ -220,19 +250,19 @@
 			"style": {
 				// "navigationBarTitleText": "职业",
 				// "enablePullDownRefresh": false
-				"navigationStyle":"custom"
+				"navigationStyle": "custom"
 			}
-		
+
 		},
 		{
 			"path": "pages/mine/editInfo/signature",
 			"style": {
 				// "navigationBarTitleText": "职业",
 				// "enablePullDownRefresh": false
-				"navigationStyle":"custom"
+				"navigationStyle": "custom"
 			}
-		
-		},{
+
+		}, {
 			"path": "pages/group/group",
 			"style": {
 				"navigationBarTitleText": "",
@@ -271,12 +301,120 @@
 			}
 
 		}
-	 
+
+		, {
+			"path": "pages/contacts/groupManage/groupManage",
+			"style": {
+				// "navigationBarTitleText": "",
+				// "enablePullDownRefresh": false
+				"navigationStyle": "custom"
+			}
+
+		}, {
+			"path": "pages/group/sendGroupRequest/sendGroupRequest",
+			"style": {
+				// "navigationBarTitleText": "",
+				// "enablePullDownRefresh": false
+				"navigationStyle": "custom"
+			}
+
+		}, {
+			"path": "pages/group/sendGroupRequest/success",
+			"style": {
+				// "navigationBarTitleText": "",
+				// "enablePullDownRefresh": false
+				"navigationStyle": "custom"
+			}
+
+		}, {
+			"path": "pages/group/groupMangement/groupMemberList",
+			"style": {
+				"navigationBarTitleText": "群聊成员",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/group/groupMangement/setGroupName",
+			"style": {
+				"navigationStyle": "custom"
+			}
+
+		}, {
+			"path": "pages/group/groupMangement/editMyName",
+			"style": {
+				"navigationStyle": "custom"
+			}
+
+		}
+	    ,{
+            "path" : "pages/group/groupMangement/inviteFriend",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "邀请新成员",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/group/groupInfoMessage",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "群通知",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/group/groupRequestDetail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "群聊申请",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/contacts/addFriend/selectGroup",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择分组",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/chat/history",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "查找聊天记录",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/home/friendMessageHistory",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
+	},
+	"condition" : { //模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [
+			{
+				"name": "", //模式名称
+				"path": "", //启动页面，必选
+				"query": "" //启动参数，在页面的onLoad函数里面得到
+			}
+		]
 	}
 }

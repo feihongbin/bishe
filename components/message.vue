@@ -1,55 +1,29 @@
 <template>
 	<view>
 		<u-swipe-action>
-			<u-swipe-action-item :options="options">
-				<view class="messageContainer">
+			<u-swipe-action-item :options="options" @click="swipe">
+				<view class="messageContainer" :style="{'background': messageItem.isTop ? '#f8f8f8' : ''}">
 					<image class="avatar" :src="messageItem.avatar" mode=""></image>
 					<view class="messageContent" @click="toMessageDetail">
 						<view class="nameAndTime">
 							<text>{{!messageItem.isGroup ? messageItem.sender : messageItem.groupName}}</text>
 							<!-- <text>{{messageItem.lastDate}}</text> -->
-							<uni-dateformat :date="Number(messageItem.lastDate)" :threshold="[60000,3600000 * 24 * 7]" format="yyyy/mm/dd"></uni-dateformat>
+							<uni-dateformat :date="Number(messageItem.lastDate)" :threshold="[60000,3600000 * 24 * 7]"
+								format="yyyy/mm/dd"></uni-dateformat>
 						</view>
 						<view class="content">
-							{{messageItem.isGroup ? (messageItem.sender +':' + messageItem.lastContent) : messageItem.lastContent}}
+							{{messageItem.isGroup ? ((messageItem.sender ? (messageItem.sender +':') : '') + messageItem.lastContent) : messageItem.lastContent}}
 						</view>
 						<text class="messageNumber" v-if="messageItem.notRead>0">
 							{{messageItem.notRead | isNumberOverflow}}
-							
+
 						</text>
-						
+
 					</view>
 				</view>
 			</u-swipe-action-item>
 		</u-swipe-action>
 	</view>
-
-
-
-
-
-
-	<!-- <image class="avatar" src="../static/logo.png" mode="aspectFit"></image>
-		<view class="messageContent" @click="toMessageDetail">
-			<view class="nameAndTime">
-				<text>{{name}}</text>
-				<text>{{time}}</text>
-			</view>
-			<view class="content">
-				{{content}}
-			</view>
-			<text class="messageNumber" v-if="messageNumber>0">
-				{{messageNumber | isNumberOverflow}}
-			</text>
-		</view> -->
-
-
-
-
-
-
-
-
 
 	</view>
 </template>
@@ -58,7 +32,7 @@
 	export default {
 		name: "message",
 		props: {
-			messageItem:{}
+			messageItem: {}
 		},
 		filters: {
 			isNumberOverflow(num) {
@@ -67,36 +41,109 @@
 		},
 		data() {
 			return {
-				options: [{
-					text: '置顶',
+			};
+		},
+		computed: {
+			options() {
+				return [{
+					text: this.messageItem.isTop ? '取消置顶' : '置顶',
 					style: {
 						backgroundColor: '#c9c8ce',
-						width:'140rpx'
+						width: '140rpx'
 					}
 				}, {
-					text: '标为未读',
+					text: this.messageItem.notRead === 0 ? '标为未读' : '标位已读',
 					style: {
 						backgroundColor: '#fb9c00',
-						width:'140rpx'
+						width: '140rpx'
 					}
-				},{
+				}, {
 					text: '删除',
 					style: {
 						backgroundColor: '#ff3a32',
-						width:'140rpx'
+						width: '140rpx'
 					}
 				}]
-			};
+			}
 		},
 		methods: {
-			toMessageDetail() {
-				uni.navigateTo({
-					url: `/pages/chat/chatPage?name=${this.messageItem.sender}&friendId=${this.messageItem.friendId}`
+			toMessageDetail(item) {
+				if(this.messageItem.isShow){
+					if(this.messageItem.isGroup){
+						uni.navigateTo({
+							url: `/pages/chat/groupChatPage?groupName=${this.messageItem.sender}&groupId=${this.messageItem.friendId}`
+						})
+					}else{
+						uni.navigateTo({
+							url: `/pages/chat/chatPage?name=${this.messageItem.sender}&friendId=${this.messageItem.friendId}`
+						})
+					}
+				}else {
+					uni.navigateTo({
+						url:`/pages/group/groupInfoMessage`
+					})
+				}
+				
+				
+				
+			},
+			swipe(index) {
+				console.log(index)
+				if (index.index === 0) {
+					this.setIsiTop()
+				}
+				if(index.index === 1){
+					this.setNotRead()
+				}
+				if(index.index === 2){
+					this.deleteMessage()
+				}
+			},
+			setIsiTop() {
+				uni.request({
+					url: this.$baseUrl + '/users/chat/setIsTop',
+					method: 'post',
+					data: {
+						account: this.messageItem.account,
+						friendId: this.messageItem.friendId,
+						isTop: this.messageItem.isTop
+					},
+					success: (data) => {
+						this.isTop = data.data.isTop
+						uni.$emit('refreshHomeMessage')
+					}
+				})
+			},
+			setNotRead() {
+				uni.request({
+					url: this.$baseUrl + '/users/chat/setNotRead',
+					method: 'post',
+					data: {
+						account: this.messageItem.account,
+						friendId: this.messageItem.friendId,
+						notRead: this.messageItem.notRead === 0 ? 1 : 0
+					},
+					success: (data) => {
+						uni.$emit('refreshHomeMessage')
+					}
+				})
+			},
+			deleteMessage(){
+				uni.request({
+					url: this.$baseUrl + '/users/chat/deleteMessage',
+					method: 'post',
+					data: {
+						account: this.messageItem.account,
+						friendId: this.messageItem.friendId
+					},
+					success: (data) => {
+						uni.$emit('refreshHomeMessage')
+					}
 				})
 			}
 		},
 		mounted() {
-			console.log(this.messageItem)
+
 		}
 	}
 </script>
@@ -115,19 +162,21 @@
 			flex: 1;
 			position: relative;
 			box-sizing: border-box;
+
 			.nameAndTime {
 				display: flex;
 				justify-content: space-between;
 				align-items: flex-end;
 				padding: 10rpx 20rpx;
 				padding-top: 0rpx;
+
 				text:nth-child(1) {
-					
+
 					font-size: 36rpx;
-					overflow:hidden;
-					    text-overflow:ellipsis;
-					    white-space:nowrap;
-						max-width: 420rpx;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					max-width: 420rpx;
 				}
 
 				text:nth-child(2) {
@@ -162,4 +211,5 @@
 			text-align: center;
 		}
 	}
+
 </style>

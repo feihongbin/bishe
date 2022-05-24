@@ -65,6 +65,15 @@
 						},
 						success: (data) => {
 							console.log('创建用户成功',data)
+							uni.setStorage({
+								key: 'accountId',
+								data: data.data.id+'',
+								success: function (res) {
+									uni.reLaunch({
+										url:`../home/home`
+									})
+								}
+							});
 						}
 					})
 				}

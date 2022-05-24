@@ -23,9 +23,10 @@
 		},
 		methods:{
 			toLogin(){
-				uni.navigateTo({
+				uni.reLaunch({
 					url:'../login/login'
 				})
+				
 			}
 		}
 	}

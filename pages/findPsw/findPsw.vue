@@ -18,7 +18,7 @@
 				<text>至少含有两种及以上字符</text>
 			</view>
 		</view>
-		<button type="primary" :disabled="!(password!=='' &&(newPassword === password))" @click="next()">确定</button>
+		<button type="primary" :disabled="!(password!=='' &&(newPassword === password))" @click="changePsw()">确定</button>
 	</view>
 </template>
 
@@ -28,6 +28,7 @@
 			return {
 				password: '',
 				newPassword: '',
+				account:''
 			}
 		},
 		computed: {
@@ -39,11 +40,28 @@
 			}
 		},
 		methods:{
-			next(){
-				uni.navigateTo({
-					url:'./success'
+			changePsw(){
+				uni.request({
+					url: this.$baseUrl + '/users/changePsw',
+					method: 'post',
+					data: {
+						account: this.account,
+						newPassword:this.newPassword
+					},
+					success: (data) => {
+						// that.userInfo = data.data.info
+						// console.log(that.userInfo)
+						// this.phone = data.data.phone
+						uni.navigateTo({
+							url:'./success'
+						})
+					}
 				})
 			}
+		
+		},
+		onLoad(option) {
+			this.account = option.account
 		}
 
 	}

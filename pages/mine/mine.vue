@@ -21,11 +21,11 @@
 			</info-item>
 			<info-item class="detailItem" label="性别" :content="userInfo.gender" showArrow @click.native="genderClick">
 			</info-item>
-			<info-item class="detailItem" label="生日" :content="formateStampToDate(Number.parseInt(userInfo.birth))"
+			<info-item class="detailItem" label="生日" :content="userInfo.birth ? formateStampToDate(Number.parseInt(userInfo.birth)) : '0-0-0'"
 				showArrow @click.native="birthClick()"></info-item>
-			<info-item class="detailItem" label="所在地" :content="userInfo.location" showArrow
+			<info-item class="detailItem" label="所在地" :content="userInfo.location || '选择所在地，发现同城'" showArrow
 				@click.native="locationClick('?location=浙江-杭州')"></info-item>
-			<info-item class="detailItem" label="家乡" :content="userInfo.native" showArrow
+			<info-item class="detailItem" label="家乡" :content="userInfo.native || '选择家乡，发现老乡'" showArrow
 				@click.native="nativeClick('?native=浙江-杭州')"></info-item>
 			<info-item class="detailItem" label="职业" :content="careerMap.get(userInfo.career) || '选择职业，发现同行'" showArrow
 				@click.native="careerClick(userInfo.career)"></info-item>
@@ -129,7 +129,7 @@
 					success: (chooseImageRes) => {
 						const tempFilePaths = chooseImageRes.tempFilePaths;
 						uni.uploadFile({
-							url: 'http://127.0.0.1:3000/upload/singleFile', //仅为示例，非真实的接口地址
+							url: 'http://150.158.170.119:3000/upload/singleFile', //仅为示例，非真实的接口地址
 							filePath: tempFilePaths[0],
 							name: 'file',
 							// formData: {
@@ -137,7 +137,7 @@
 							// },
 							success: (uploadFileRes) => {
 								let data = JSON.parse(uploadFileRes.data)
-								let fileUrl = 'http://127.0.0.1:3000/uploads/' + data.filename
+								let fileUrl = 'http://150.158.170.119:3000/uploads/' + data.filename
 								uni.request({
 									url: this.$baseUrl + '/users/info/setAvatar',
 									method: 'post',
@@ -146,7 +146,6 @@
 										avatar: fileUrl
 									},
 									success: (data) => {
-										console.log(123444)
 										this.getUserInfo()
 									}
 								})

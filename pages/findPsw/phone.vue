@@ -2,7 +2,7 @@
 	<view class="findByPhone">
 		<view class="tips">
 			<text class="title">填写手机号码</text>
-			<text class="content">请填写出完整的手机号 <text class="phoneNum"> 137*******52 </text> 以验证身份</text>
+			<text class="content">请填写出完整的手机号 <text class="phoneNum"> {{phone.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} </text> 以验证身份</text>
 		</view>
 		<view class="phoneInput">
 			<text class="areaId">+86</text>
@@ -16,15 +16,43 @@
 	export default{
 		data(){
 			return{
-				phoneNumber:''
+				phoneNumber:'',
+				phone:'',
+				account:"",
 			}
 		},
 		methods:{
 			next(){
-				uni.navigateTo({
-					url:'./findPsw'
+				if(this.phoneNumber === this.phone){
+					uni.navigateTo({
+						url:`./findPsw?account=${this.account}`
+					})
+				}else{
+					uni.showToast({
+						icon:"error",
+						title: '手机号码验证错误',
+						duration: 2000
+					});
+				}
+			},
+			getPhone(id){
+				uni.request({
+					url: this.$baseUrl + '/users/getPhone',
+					method: 'post',
+					data: {
+						account: id,
+					},
+					success: (data) => {
+						// that.userInfo = data.data.info
+						// console.log(that.userInfo)
+						this.phone = data.data.phone
+					}
 				})
 			}
+		},
+		onLoad(option) {
+			this.account = option.account
+			this.getPhone(option.account)
 		}
 	}
 </script>

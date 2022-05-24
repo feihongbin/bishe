@@ -6,11 +6,11 @@
 				<input confirm-type="search" v-model="searchInput" placeholder="搜索联系人/群" @focus="changeInputStatus()" />
 			</view>
 		</view>
-		<view class="searchList" v-if="searchInput !== '' && isInputing" @click="toResult()">
+		<view class="searchList" v-if="searchInput !== '' && isInputing" @click="toResult('users')">
 			<u-icon class="addIcon" name="man-add-fill" size="32"></u-icon>
 			<text>找人: {{searchInput}}</text>
 		</view>
-		<view class="searchList" v-if="searchInput !== '' && isInputing" @click="toResult()">
+		<view class="searchList" v-if="searchInput !== '' && isInputing" @click="toResult('group')">
 			<u-icon class="addIcon" name="man-add-fill" size="32"></u-icon>
 			<text>找群: {{searchInput}}</text>
 		</view>
@@ -34,11 +34,18 @@
 		methods: {
 			changeInputStatus(){
 				this.isInputing = true
+				this.isFail = false
 			},
-			toResult() {
-				console.log()
+			toResult(str) {
+				console.log(231)
+				let url = ''
+				if(str === 'users'){
+					url = '/pages/contacts/addFriend/searchResult'
+				}else {
+					 url = '/pages/group/groupIntroduce'
+				}
 				uni.request({
-					url: this.$baseUrl + '/users/isExist',
+					url: this.$baseUrl + `/${str}/isExist`,
 					method: 'post',
 					data: {
 						account: this.searchInput,
@@ -49,7 +56,7 @@
 							this.isInputing = false
 						}else {
 							uni.navigateTo({
-								url: `./searchResult?id=${this.searchInput}`
+								url: `${url}?id=${this.searchInput}`
 							})
 						}
 					

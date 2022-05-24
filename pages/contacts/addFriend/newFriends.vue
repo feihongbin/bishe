@@ -45,7 +45,12 @@
 			uni.$on('updateNewFriendList',()=>{
 				this.getNewFriendList()
 			})
+			
+		},
+		onUnload() {
+			uni.$emit('refreshContacts')
 		}
+	
 		
 	}
 </script>

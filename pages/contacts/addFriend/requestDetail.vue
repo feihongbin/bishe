@@ -18,7 +18,7 @@
 			
 		</view>
 		<view v-if="status !== '0'" class="result">
-			<text>已{{status===1?'同意':'拒绝'}}该申请</text>
+			<text>已{{status==1?'同意':'拒绝'}}该申请</text>
 		</view>
 	</view>      
 </template>

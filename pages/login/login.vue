@@ -15,6 +15,7 @@
 				<text @click="findPsw">忘记密码</text><text>|</text><text @click="register">用户注册</text>
 			</view>
 		</view>
+		<u-toast ref="uToast"></u-toast>
 	</view>
 </template>
 
@@ -22,50 +23,69 @@
 	export default {
 		data() {
 			return {
-				account:'',
-				password:''
+				account: '',
+				password: '',
+				param: {
+					type: 'error',
+					icon: true,
+					title: '失败主题',
+					message: "账号密码输入错误",
+					iconUrl: 'https://cdn.uviewui.com/uview/demo/toast/error.png'
+				},
 			};
 		},
-		methods:{
-			loginAccount(){
-				if(this.account && this.password){
+		methods: {
+			loginAccount() {
+				if (this.account && this.password) {
 					uni.request({
-						url:this.$baseUrl+'/users/login',
-						method:'post',
-						data:{
-							account:this.account,
-							password:this.password
+						url: this.$baseUrl + '/users/login',
+						method: 'post',
+						data: {
+							account: this.account,
+							password: this.password
 						},
-						success:(data)=>{
+						success: (data) => {
 							console.log(data.data.code)
-							if(data.data.code === 200){
+							if (data.data.code === 200) {
 								uni.setStorage({
 									key: 'accountId',
 									data: data.data.account,
-									success: function (res) {
+									success: function(res) {
 										uni.navigateTo({
-											url:`../home/home`
+											url: `../home/home`
 										})
 									}
 								});
-								
+
+							}else {
+								this.showToast()
 							}
 						}
 					})
-					
+
 				}
 				// uni.navigateTo({
 				// 	url:`../home/home`
 				// })
 			},
-			findPsw(){
+			findPsw() {
 				uni.navigateTo({
-					url:'../findPsw/index'
+					url: '../findPsw/index'
 				})
 			},
-			register(){
+			register() {
 				uni.navigateTo({
-					url:'../register/index'
+					url: '../register/index'
+				})
+			},
+			showToast() {
+				this.$refs.uToast.show({
+					...this.param,
+					// complete() {
+					// 	param.url && uni.navigateTo({
+					// 		url: param.url
+					// 	})
+					// }
 				})
 			}
 		}

@@ -20,6 +20,7 @@ const RTC = {
 	// 初始化
 	init: async function(info) {
 		Store = Object.assign(Store, info);
+		console.log('Store',Store)
 		// 初始化回调 
 		await rtcModule.setCallBack(res => {
 			RTC.callBack(res);
@@ -218,6 +219,7 @@ const RTC = {
 	joinChannel: async function() {
 		// 开启免提
 		await RTC.setEnableSpeakerphone(true);
+		console.log('3333',Store)
 		// 加入 rtc 频道
 		await rtcModule.joinChannel({
 			"token": Store.token,
@@ -386,6 +388,8 @@ const RTC = {
 	}
 }
 
+// 上面的全是RTC对象
+
 // 监测视频容器
 uni.$on("CanvasView", data => {
 	// 本地视频容器
@@ -401,6 +405,7 @@ uni.$on("CanvasView", data => {
 		if (oa.length == 0) {
 			Store.remoteLits.push(data);
 			setTimeout(() => {
+				// 远端加入房间
 				RTC.remotenableVideo({
 					uid: data.peerid
 				});

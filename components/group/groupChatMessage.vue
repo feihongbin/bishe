@@ -5,15 +5,19 @@
 				<uni-dateformat v-if="new Date().getDate() !== new Date(item.content).getDate()" :date="item.content" :threshold="[0,0]" format="MM/dd hh:mm"></uni-dateformat>
 				<uni-dateformat v-else :date="item.content" :threshold="[0,0]" format="hh:mm"></uni-dateformat>
 			</view>
+			<view v-if="item.tag === 'welcome'" class="chatTime">
+				<text>{{item.content}}</text>
+			</view>
 			
-			<view v-else :class="['chatText',item.sender === account ? 'myselfChatContent' : '']" >
+			<view v-if="item.tag !== 'time' && item.tag !== 'welcome'" :class="['chatText',item.sender === account ? 'myselfChatContent' : '']" >
 				<image class="avatar" :src="item.avatar" mode=""></image>
 				<view :class="['contentContainer',item.sender === account ? 'myContentContainer' : 'othersContentContainer']">
 					<text class="name">{{item.name}}</text>
 					<text selectable="true" v-if="item.tag === 'text'" :class="['content',item.sender === account ? 'myContent' : '']">{{item.content}}</text>
+					<image class="contentImage" v-if="item.tag === 'image/jpeg'" :src="item.content" mode="widthFix"></image>
 				</view>
 	
-				<image class="contentImage" v-if="item.tag === 'image'" :src="item.content" mode="widthFix"></image>
+				<!-- <image class="contentImage" v-if="item.tag === 'image/jpeg'" :src="item.content" mode="widthFix"></image> -->
 				<!-- <text v-if="item.type === 'myself'" :class="{'isRead':true,'hasRead':true}">{{true ? '未读' : '已读'}}</text> -->
 			</view>
 		</view>

@@ -1,8 +1,17 @@
 <template>
-	<view class="loading" :style="`margin-top: ${mt}rpx;`">
-		<view class="obj" :style="`background-color: ${color};`" ref="obj1"></view>
-		<view class="obj" :style="`margin-left: 12rpx; margin-right: 12rpx; background-color: ${color};`" ref="obj2"></view>
-		<view class="obj" :style="`background-color: ${color};`" ref="obj3"></view>
+	<view class="container">
+		
+		
+		<view class="image">
+			<image :src="src"></image>
+		</view>
+		<!-- <view class="">不会后悔</view> -->
+		<view class="loading" :style="`margin-top: ${mt}rpx;`">
+			<view class="obj" :style="`background-color: ${color};`" ref="obj1"></view>
+			<view class="obj" :style="`margin-left: 12rpx; margin-right: 12rpx; background-color: ${color};`"
+				ref="obj2"></view>
+			<view class="obj" :style="`background-color: ${color};`" ref="obj3"></view>
+		</view>
 	</view>
 </template>
 
@@ -21,7 +30,8 @@
 			mt: {
 				type: [String, Number],
 				default: 40
-			}
+			},
+			src:String
 		},
 		created() {
 			// 定时器执行前，先执行一次，让整个动画过程更流畅
@@ -71,7 +81,7 @@
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	.loading {
 		width: 750rpx;
 		height: 30rpx;
@@ -85,4 +95,20 @@
 		height: 30rpx;
 		border-radius: 100rpx;
 	}
+
+	.image{
+		padding: 0rpx 100rpx;
+		wdith:200rpx;
+		height: 600rpx;
+		// text-align: center;
+		// image{
+		// 	width: 200rpx;
+		// 	height: 200rpx;
+		// }
+		
+		// transform: translateY(-50%);
+	}
+
+	
+
 </style>

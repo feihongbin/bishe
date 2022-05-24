@@ -19,7 +19,7 @@
 		</view>
 		<emoji v-if="isEmoji" class="emojiBox" ref="emojiBox" @addEmoji="addEmoji"></emoji>
 		<speak v-if="isSpeaking" class="speakBox"></speak>
-		<more v-if="isPlus" class="moreBox"></more>
+		<more :friendId="friendId" v-if="isPlus" class="moreBox"></more>
 	</view>
 </template>
 

@@ -10,8 +10,8 @@
 		<view class="friendInfo">
 			<image src="../../../static/logo.png" mode=""></image>
 			<view class="info">
-				<text>一二十三岁</text>
-				<text>24岁 浙江 杭州市</text>
+				<text>{{friendInfo.name}}</text>
+				<text> {{ age }} {{' '+friendInfo.location || ' '}} </text>
 			</view>
 		</view>
 		<view class="verify">
@@ -22,37 +22,91 @@
 			<view class="groupAndNoteTitle">设置备注和分组</view>
 			<view class="note">
 				<text>备注</text>
-				<input  v-model="note" class="noteCell" type="text" value="" />
+				<input v-model="note" class="noteCell" type="text" value="" />
 			</view>
 			<u-divider></u-divider>
-			<view class="group">
+			<view class="group" @click="changeGroup">
 				<text>分组</text>
 				<view class="groupCell">
-					<text v-model="group"></text>
+					<text>{{group}}</text>
 					<u-icon name="arrow-right" size="16" style="margin-right: 10px;"></u-icon>
 				</view>
 			</view>
 		</view>
+		<u-toast ref="uToast"></u-toast>
 	</view>
 </template>
 
 <script>
-	export default{
-		data(){
+	export default {
+		data() {
 			return {
-				friendId:'',
-				message:'',
-				group:'宇宙之大',
-				note:''
+				friendId: '',
+				message: '',
+				group: '我的好友',
+				note: '',
+				friendInfo: {},
+				age: '',
+				param: {
+					type: 'success',
+					title: '成功主题(带图标)',
+					message: "发送成功",
+					iconUrl: 'https://cdn.uviewui.com/uview/demo/toast/success.png'
+				},
 			}
 		},
-		methods:{
-			back(){
+		methods: {
+			back() {
 				uni.navigateBack({
-					delta:1
+					delta: 1
 				})
 			},
-			sendRequst(){
+			changeGroup() {
+				uni.navigateTo({
+					url: `/pages/contacts/addFriend/selectGroup`
+				})
+			},
+			showToast() {
+				this.$refs.uToast.show({
+					...this.param,
+					duration:1000,
+					complete() {
+						 uni.reLaunch({
+							url: '/pages/home/home'
+						})
+					}
+				})
+			},
+			getFriendInfo() {
+				let that = this
+				uni.getStorage({
+					key: 'accountId',
+					success: function(res) {
+						uni.request({
+							url: that.$baseUrl + `/users/info`,
+							method: 'post',
+							data: {
+								account: that.friendId,
+
+							},
+							success: (data) => {
+								// console.log('发送成功',data)
+								that.friendInfo = data.data.info
+								console.log(that.friendInfo)
+								if (that.friendInfo.birth) {
+									let now = new Date().getFullYear()
+									let d = new Date(Number.parseInt(that.friendInfo.birth))
+										.getFullYear()
+									that.age = now - d + '岁'
+									console.log(that.age)
+								}
+							}
+						})
+
+					}
+				})
+			},
+			sendRequst() {
 				let that = this
 				uni.getStorage({
 					key: 'accountId',
@@ -64,36 +118,46 @@
 								account: res.data,
 								friendId: that.friendId,
 								message: that.message,
-								group:that.group,
-								note:that.note,
-								isRead:false,
-								status:0
+								group: that.group || '我的好友',
+								note: that.note || that.friendInfo.name,
+								isRead: false,
+								status: 0
 							},
 							success: (data) => {
-								// console.log('发送成功',data)
-								that.socket.emit('newFriends',{
-									friendId:that.friendId,
-									account:res.data,
-									count:1,
-									message:that.message,
-									group:that.group,
-									note:that.note
+								that.socket.emit('newFriends', {
+									friendId: that.friendId,
+									account: res.data,
+									count: 1,
+									message: that.message,
+									group: that.group,
+									note: that.note
 								})
+								// uni.showToast({
+								// 	duration:2000,
+								// 	title:'发送成功',
+								// 	icon:"success",
+								// 	success() {
+								// uni.reLaunch({
+								// 	url:'/pages/home/home'
+								// })
+								// 	}
+								// })
+								that.showToast()
 							}
 						})
-						
+
 					}
 				})
-			}
+			},
+
 		},
 		onLoad(options) {
 			this.friendId = options.friendId
-			uni.getStorage({
-				key:'accountId',
-				success(res) {
-					console.log(res.data)
-				}
-			})
+			this.getFriendInfo(),
+				uni.$on('selectedGroup', data => {
+					this.group = data
+					console.log(this.group)
+				})
 		}
 	}
 </script>
@@ -202,19 +266,22 @@
 			.groupCell {
 				flex: 1;
 			}
-			.groupCell{
+
+			.groupCell {
 				display: flex;
 				justify-content: space-between;
-				text{
+
+				text {
 					flex: 1;
 				}
 			}
 		}
 
 	}
-	.group:active{
-	background: #f6f6f6;
-}
+
+	.group:active {
+		background: #f6f6f6;
+	}
 
 	/deep/ .u-cell__body {
 		padding: 0;

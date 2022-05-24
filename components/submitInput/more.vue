@@ -34,7 +34,7 @@
 		data() {
 			return {
 				// 输入的频道
-				channel: "4578912",
+				channel: "",
 				// 场景选择
 				scenarioLits: [{
 						value: 0,
@@ -52,6 +52,18 @@
 				windowWidth: 200,
 				windowHeight: 200,
 			}
+		},
+		props:{
+			friendId:String
+		},
+		mounted() {
+			let that = this
+			uni.getStorage({
+				key:'accountId',
+				success(res) {
+					that.channel = res.data+''
+				}
+			})
 		},
 		methods: {
 			chooseImg(type) {
@@ -102,6 +114,11 @@
 			},
 
 			goBack() {
+				
+				// 邀请对方
+				console.log('2341')
+				this.socket.emit('vedioInvite',{account:this.channel,channel:this.channel,friendId:this.friendId,appid:Config.appid,scenario: this.scenario,roleChoices: this.roleChoices,liveUrl: Config.liveUrl})
+				
 				// 没有填写 appid
 				if (!Config.appid) {
 					uni.showToast({
@@ -134,7 +151,8 @@
 					liveUrl: Config.liveUrl,
 				})
 				uni.navigateTo({
-					url: '/pages/index/rtcPage?info=' + oInfo,
+					// tag用来标识接收方又没有接收  0没接收  1接收了   2拒绝了
+					url: `/pages/index/rtcPage?tag=0&friendId=${this.friendId}&info=${oInfo}`,
 					success(res) {
 						console.log("成功", res);
 					},

@@ -16,7 +16,7 @@
 				</view>
 			</view>
 		</view>
-		<u-picker :show="show" ref="uPicker" :columns="columns" @confirm="confirm" @cancel="cancel"></u-picker>
+		<u-picker :show="show" ref="uPicker" @change="changeHandler" :columns="columns" @confirm="confirm" @cancel="cancel"></u-picker>
 	</view>
 </template>
 
@@ -30,13 +30,12 @@
 					[
 						'河北', '山西',
 						'内蒙古', '辽宁', '吉林', '黑龙江',
-						'江苏', '安徽', '福建',
+						'江苏','浙江', '安徽', '福建',
 						'江西', '山东', '河南', '湖北',
 						'湖南', '广东', '广西', '海南',
 						'四川', '贵州', '云南',
 						'西藏', '陕西', '甘肃', '青海',
-						'宁夏', '新疆', '台湾', '香港',
-						'澳门', '国外'
+						'宁夏', '新疆'
 					],
 					[
 						'石家庄市', '唐山市',
@@ -317,6 +316,21 @@
 			},
 			cancel() {
 				this.show = false
+			},
+			changeHandler(e) {
+				const {
+					columnIndex,
+					value,
+					values, // values为当前变化列的数组内容
+					index,
+					// 微信小程序无法将picker实例传出来，只能通过ref操作
+					picker = this.$refs.uPicker
+				} = e
+				// 当第一列值发生变化时，变化第二列(后一列)对应的选项
+				if (columnIndex === 0) {
+					// picker为选择器this实例，变化第二列对应的选项
+					picker.setColumnValues(1, this.columnData[index])
+				}
 			},
 			confirm(e) {
 				this.show = false

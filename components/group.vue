@@ -8,8 +8,14 @@
 				</text>
 				<text slot="title">
 					<view class="groupTitle">
-						<text>{{item[0]}}</text>
-						<text>{{item.length - 1}}</text>
+						<view class="tooltip" v-if="currentTab === 1">
+							<u-tooltip @click="groupManage" :text="item[0]" overlay  :showCopy="false" :buttons="['管理分组']" ></u-tooltip>
+						</view>
+						<view class="tooltip" v-if="currentTab === 2">
+							<text class="titleText" >{{item[0]}}</text>
+						</view>
+						
+						<text class="titleConent" >{{item.length - 1}}</text>
 					</view>
 				</text>
 				<text class="u-collapse-content" v-if="currentTab===1">
@@ -54,6 +60,14 @@
 					url:`/pages/chat/groupChatPage?groupId=${id}&groupName=${name}`
 					// url:'../pages/chat/groupChatPage?groupId=${id}&groupName=${name}'
 				})
+			},
+			groupManage(index){
+				console.log(index)
+				if(index === 0){
+					uni.navigateTo({
+						url:'/pages/contacts/groupManage/groupManage'
+					})
+				}
 			}
 		}
 
@@ -65,11 +79,14 @@
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
-		text:nth-child(1){
+		.tooltip{
 			flex: 1;
-			font-size: 36rpx;
 		}
-		text:nth-child(2){
+		.titleText{
+			font-size: 36rpx;
+			color: #666;
+		}
+		.titleContent{
 			font-size: 24rpx;
 			color: #666;
 		}
@@ -104,5 +121,7 @@
 		margin-left: 0;
 		margin-right: 8rpx;
 	}
-
+/deep/ .u-tooltip__wrapper__text{
+	font-size: 36rpx;
+}
 </style>

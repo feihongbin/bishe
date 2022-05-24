@@ -1,17 +1,29 @@
 <template>
 	<view class="content" :style="{width: windowWidth + 'px',height: windowHeight + 'px'}">
 		<!-- 观众加入房间后 暂无主播（提示） -->
-		<view v-if="info.roleChoices == 2 && peeridInfo.length == 0" class="hint"
-			:style="{top:(windowHeight/2-60) + 'px',width: windowWidth + 'px'}">
-			<myLoading />
-			<text class="text">暂无主播,请耐心等候主播加入</text>
+		<!-- v-if="peeridInfo.length == 0" -->
+		<view v-if="tag == 0" class="hint" :style="{top:(windowHeight/4-60) + 'px',width: windowWidth + 'px'}">
+			<myLoading :src="avatar" mode="aspectFit" />
+			<text class="text">正在呼叫中</text>
 		</view>
+
+
+
+
+
+
+
+
+
+		<!-- :style="{width:  '160px',height: '200px',paddingTop: peeridInfo.length == 0 ? '0px' : '20px'}" -->
+		<!-- :style="{width: windowWidth + 'px',height: windowHeight + 'px',paddingTop: peeridInfo.length == 0 ? '0px' : '20px'}" -->
+
 		<!-- 视频渲染(多人) -->
-		<scroll-view scroll-y="true" class="CanvasView"
-			:style="{width: windowWidth + 'px',height: windowHeight + 'px',paddingTop: peeridInfo.length == 0 ? '0px' : '20px'}">
+		<!-- :style="{width: windowWidth + 'px',height: windowHeight + 'px',paddingTop: peeridInfo.length == 0 ? '0px' : '20px'}" -->
+		<view class="CanvasView" :style="{width: windowWidth + 'px',height: windowHeight + 'px',position:'relative'}">
 			<!-- 本地视频渲染 -->
-			<view :class="peeridInfoStyle" v-if="info.roleChoices != 2" style="position: relative;">
-				<view style="flex: 1;">
+			<view :class="peeridInfoStyle"  :style="{position: 'relative',visibility: tag == 0 ? 'hidden' : 'visible'}">
+				<view :style="{width:  '160px',height: '200px'}">
 					<AR-CanvasView ref="location" style="flex: 1;" />
 				</view>
 				<!-- 关闭视频后显示 -->
@@ -19,30 +31,35 @@
 					:style="{left: video ? '-800px' : '0px',backgroundColor:  video ? '':'#0A1621',opacity: video ? '0':'1'}">
 					<image style="width: 60px;height: 80px;" src="../../static/icon_launch_logo.png" mode=""></image>
 				</view>
-				<view class="user-hint">
+
+				<!-- 显示左下角的用户名称 -->
+				<!-- <view class="user-hint">
 					<text class="hint-text">{{info.uid}}</text>
-				</view>
+				</view> -->
 			</view>
 			<!-- 远端用户视频渲染 -->
-			<view v-for="peerid in peeridInfo" :key="peerid.uid" :class="peeridInfoStyle">
-				<view style="flex: 1;">
-					<AR-CanvasView :ref="'remote'+peerid.uid" style="flex: 1;" />
+			<!-- <view v-if="tag == 1" class=""> -->
+				<view v-for="peerid in peeridInfo" :key="peerid.uid" :class="peeridInfoStyle">
+					<view
+						:style="{width: windowWidth + 'px',height: windowHeight + 'px'}">
+						<AR-CanvasView :ref="'remote'+peerid.uid" style="flex: 1;" />
+					</view>
+					<!-- 远端关闭视频后显示 -->
+					<view class="location-none"
+						:style="{left: peerid.videoStatus ? '-800px' : '0px',backgroundColor:  peerid.videoStatus ? '':'#0A1621',opacity: peerid.videoStatus ? '0':'1'}">
+						<image style="width: 60px;height: 80px;" src="../../static/icon_launch_logo.png" mode="">
+						</image>
+					</view>
+					<!-- <view class="user-hint">
+						<text class="hint-text">{{peerid.uid}}</text>
+					</view> -->
 				</view>
-				<!-- 远端关闭视频后显示 -->
-				<view class="location-none"
-					:style="{left: peerid.videoStatus ? '-800px' : '0px',backgroundColor:  peerid.videoStatus ? '':'#0A1621',opacity: peerid.videoStatus ? '0':'1'}">
-					<image style="width: 60px;height: 80px;" src="../../static/icon_launch_logo.png" mode=""></image>
-				</view>
-				<view class="user-hint">
-					<text class="hint-text">{{peerid.uid}}</text>
-				</view>
-			</view>
-		</scroll-view>
+			<!-- </view> -->
+		</view>
 		<!-- 相关操作 -->
 		<view class="options" :style="{width: windowWidth + 'px'}">
 			<!-- 视频相关操作(非游客显示) -->
-			<view style="flex-direction: row;justify-content: space-between;margin-bottom: 20px;"
-				v-if="info.roleChoices != 2">
+			<view style="flex-direction: row;justify-content: space-between;margin-bottom: 20px;" v-if="tag == 1">
 				<!-- 视频开关 -->
 				<view class="icon" @click="videoFn">
 					<image class="icon_img" src="../../static/vi_on.png" v-if="video"></image>
@@ -50,39 +67,44 @@
 					<text class="icon_text">视频</text>
 				</view>
 				<!--直播模式 添加旁路推流  @click="liveTranscoFn"-->
-				<view class="icon" @click="pullFn" v-if="info.scenario == 1">
+				<<!-- view class="icon" @click="pullFn" v-if="info.scenario == 1">
 					<image style="width: 70px;height: 70px;" src="../../static/save-fill.png" mode=""></image>
 					<text class="icon_text">推流</text>
-				</view>
-				<!-- 前后摄像头转换 -->
-				<view class="icon" @click="cameraFn">
-					<image class="icon_img" src="../../static/camera.png" mode=""></image>
-					<text class="icon_text">摄像{{camera?'前':'后'}}</text>
-				</view>
-			</view>
-			<!-- 音频相关操作 -->
-			<view :style="{flexDirection: 'row',justifyContent: info.roleChoices != 2 ? 'space-between':'center'}">
-				<!-- 音频开关(非游客显示) -->
-				<view class="icon" @click="audioFn" v-if="info.roleChoices != 2">
-					<image class="icon_img" src="../../static/au_in.png" v-if="audio"></image>
-					<image class="icon_img" src="../../static/au_on.png" v-else></image>
-					<text class="icon_text">静音</text>
-				</view>
-				<!-- 挂断 -->
-				<view class="icon" @click="closeFn">
-					<image class="icon_img" src="../../static/over.png"></image>
-					<text class="icon_text">挂断</text>
-				</view>
-				<!-- 扬声器开关(非游客显示) -->
-				<view class="icon" @click="speakerphoneFn" v-if="info.roleChoices != 2">
-					<image class="icon_img" src="../../static/icon_speakers.png" v-if="Speakerphone"></image>
-					<image class="icon_img" src="../../static/icon_speaker.png" v-else></image>
-					<text class="icon_text">扬声器</text>
-				</view>
+			</view> -->
+			<!-- 前后摄像头转换 -->
+			<view class="icon" @click="cameraFn">
+				<image class="icon_img" src="../../static/camera.png" mode=""></image>
+				<text class="icon_text">摄像{{camera?'前':'后'}}</text>
 			</view>
 		</view>
-		<!-- 旁路推流相关 -->
-		<view v-if="liveShow" class="live" :style="{width: windowWidth + 'px',height: windowHeight + 'px'}"
+		<!-- 音频相关操作 -->
+		<view :style="{flexDirection: 'row',justifyContent: 'space-around'}">
+			<!-- 音频开关(非游客显示) -->
+			<view class="icon" @click="audioFn" v-if="tag == 1">
+				<image class="icon_img" src="../../static/au_in.png" v-if="audio"></image>
+				<image class="icon_img" src="../../static/au_on.png" v-else></image>
+				<text class="icon_text">静音</text>
+			</view>
+			<!-- 接听 -->
+			<view class="icon" @click="acceptFn" v-if="!isSelf && tag != 1">
+				<image class="icon_img" src="../../static/receive.png"></image>
+				<text class="icon_text">接听</text>
+			</view>
+			<!-- 挂断 -->
+			<view class="icon" @click="closeFn">
+				<image class="icon_img" src="../../static/over.png"></image>
+				<text class="icon_text">挂断</text>
+			</view>
+			<!-- 扬声器开关(非游客显示) -->
+			<view class="icon" @click="speakerphoneFn" v-if="tag == 1">
+				<image class="icon_img" src="../../static/icon_speakers.png" v-if="Speakerphone"></image>
+				<image class="icon_img" src="../../static/icon_speaker.png" v-else></image>
+				<text class="icon_text">扬声器</text>
+			</view>
+		</view>
+	</view>
+	<!-- 旁路推流相关 -->
+	<!-- 	<view v-if="liveShow" class="live" :style="{width: windowWidth + 'px',height: windowHeight + 'px'}"
 			@click="penetrateFn($event)">
 			<view class="live-options" :style="{width: windowWidth + 'px'}">
 				<text class="icon_text">注意：请确保当前使用的 appid 开通旁路推流服务，否则将推流失败</text>
@@ -92,7 +114,7 @@
 					<button style="width: 80px;" type="primary" @click="liveTranscoFn">确定</button>
 				</view>
 			</view>
-		</view>
+		</view> -->
 	</view>
 </template>
 
@@ -100,12 +122,25 @@
 	import Utils from "../../utils/until.js";
 	import RTC from "../../utils/rtc.js";
 	import myLoading from '@/components/my-loading/my-loading.nvue'
+	import io from '@/js_sdk/hyoga-uni-socket_io/uni-socket.io.js'
 	export default {
 		components: {
 			myLoading
 		},
 		data() {
 			return {
+				// socket
+				socket: io('http://150.158.170.119:8082', {
+					query: {},
+					transports: ['websocket', 'polling'],
+					timeout: 5000,
+				}),
+				// 判断是对方还是自己
+				isSelf: true,
+				// 对方的头像
+				avatar: '',
+				// 表示接收方是否接受了 0未接收  1接收了  2拒绝了
+				tag: 0,
 				// RTC 所需信息
 				info: {},
 				// 生成远端视频容器
@@ -131,6 +166,7 @@
 		watch: {
 			peeridInfo: function(newName) {
 				// 根据用户数量控制样式
+				console.log(this.peeridInfo)
 				const oLength = this.info.roleChoices == 2 ? newName.length : (newName.length + 1);
 				if (oLength > 1) {
 					this.peeridInfoStyle = "video_local_1";
@@ -139,12 +175,14 @@
 				}
 			}
 		},
+		// 监听了用户加入、离开和开关视频的三个事件
 		async created() {
 			const oInfo = await Utils.getWidthHeight();
 			this.windowWidth = oInfo.windowWidth;
 			this.windowHeight = oInfo.windowHeight;
 			// 监测远端用户加入(创建容器)
 			uni.$on("peeridJoinChannel", data => {
+				console.log(data)
 				if (data) {
 					const oa = this.peeridInfo.filter((item) => {
 						return item.uid == data
@@ -192,6 +230,22 @@
 			})
 		},
 		onLoad(options) {
+			this.tag = options.tag
+			let info = JSON.parse(options.info)
+			this.isSelf = !(info.channel == options.friendId)
+			// 请求到头像
+			uni.request({
+				url: this.$baseUrl + '/users/info',
+				method: 'post',
+				data: {
+					account: options.friendId,
+				},
+				success: (data) => {
+					this.avatar = data.data.info.avatar
+					console.log(this.avatar)
+				}
+			})
+
 			if (options.info) {
 				uni.showLoading({
 					title: '加载中,请稍后'
@@ -199,16 +253,28 @@
 				const oInfo = JSON.parse(options.info);
 				this.info = Object.assign(this.info, oInfo);
 				// 初始化
+				console.log('初始化了')
 				this.init();
 			}
+			// 监听对方接收与拒绝
+			console.log(this.socket)
+			this.socket.on('rejust', async () => {
+				this.tag = 2
+				await RTC.destroyRtc();
+				// 返回首页
+				uni.navigateBack({
+					delta: 1
+				})
+			})
+			this.socket.on('accept', () => {
+				this.tag = 1
+			})
 		},
 		mounted() {
-			if (this.info.roleChoices != 2) {
 				// 传入本地视频容器
 				uni.$emit("CanvasView", {
 					location: this.$refs.location
 				});
-			}
 		},
 		beforeDestroy() {
 			// 移除App级别的所有事件监听器
@@ -216,59 +282,66 @@
 		},
 		methods: {
 			// 推流(在直播场景下)
-			pullFn() {
-				const _this = this;
-				uni.showActionSheet({
-					itemList: ['推流', '停止推流'],
-					success: function(res) {
-						// 推流
-						if ((res.tapIndex + 1) == 1) {
-							_this.liveShow = true;
-						} else {
-							_this.removePublishStreamUrl();
-						}
-						console.log('选中了第' + (res.tapIndex + 1) + '个按钮');
-					},
-					fail: function(res) {
-						console.log(res.errMsg);
-					}
-				});
-			},
+			// pullFn() {
+			// 	const _this = this;
+			// 	uni.showActionSheet({
+			// 		itemList: ['推流', '停止推流'],
+			// 		success: function(res) {
+			// 			// 推流
+			// 			if ((res.tapIndex + 1) == 1) {
+			// 				_this.liveShow = true;
+			// 			} else {
+			// 				_this.removePublishStreamUrl();
+			// 			}
+			// 			console.log('选中了第' + (res.tapIndex + 1) + '个按钮');
+			// 		},
+			// 		fail: function(res) {
+			// 			console.log(res.errMsg);
+			// 		}
+			// 	});
+			// },
 			// 停止旁路推流
-			removePublishStreamUrl() {
-				if (this.liveState) {
-					this.liveState = false;
-					RTC.removePublishStreamUrl(this.info.liveUrl);
-				} else {
-					uni.showToast({
-						title: "请先推流",
-						icon: "none",
-						duration: 2000
-					})
-				}
-			},
+			// removePublishStreamUrl() {
+			// 	if (this.liveState) {
+			// 		this.liveState = false;
+			// 		RTC.removePublishStreamUrl(this.info.liveUrl);
+			// 	} else {
+			// 		uni.showToast({
+			// 			title: "请先推流",
+			// 			icon: "none",
+			// 			duration: 2000
+			// 		})
+			// 	}
+			// },
 			// 添加旁路推流
-			liveTranscoFn() {
-				if (this.info.liveUrl) {
-					this.liveShow = false;
-					this.liveState = true;
-					RTC.LiveTransco(this.info.liveUrl);
-				} else {
-					uni.showToast({
-						title: "请输入推流地址",
-						icon: "none",
-						duration: 2000
-					})
-				}
-			},
+			// liveTranscoFn() {
+			// 	if (this.info.liveUrl) {
+			// 		this.liveShow = false;
+			// 		this.liveState = true;
+			// 		RTC.LiveTransco(this.info.liveUrl);
+			// 	} else {
+			// 		uni.showToast({
+			// 			title: "请输入推流地址",
+			// 			icon: "none",
+			// 			duration: 2000
+			// 		})
+			// 	}
+			// },
 			// 挂断
 			async closeFn() {
+				this.tag = 2
+				console.log(this.socket)
+				this.socket.emit('rejustVedioInvite', {})
 				// 销毁实例
 				await RTC.destroyRtc();
 				// 返回首页
 				uni.navigateBack({
-					delta:1
+					delta: 1
 				})
+			},
+			acceptFn() {
+				this.tag = 1
+				this.socket.emit('acceptVedioInvite', {})
 			},
 			// 视频开关
 			videoFn() {
@@ -306,7 +379,9 @@
 					await RTC.enableLocalVideo(false)
 				}
 				// 加入频道
+				console.log('232')
 				await RTC.joinChannel();
+				console.log('234')
 				uni.hideLoading();
 			},
 			// 禁止穿透
@@ -352,12 +427,12 @@
 		opacity: 0.5;
 		padding: 4px 10px;
 	}
-    
+
 	.hint-text {
 		color: #FFFFFF;
 		opacity: 1;
 	}
-	
+
 	.CanvasView {
 		flex-wrap: wrap;
 		flex-direction: row;

@@ -26,7 +26,7 @@
 					<text slot="title">
 						<view class="groupTitle">
 							<text>{{item[0]}}</text>
-							<text>2/10</text>
+							<text>{{item.length - 1}}</text>
 						</view>
 					</text>
 					<text class="u-collapse-content">
@@ -57,7 +57,8 @@
 			return {
 				friendByGroup: [],
 				checkedList: [],
-				info: {}
+				info: {},
+				socketObj: null
 			};
 		},
 
@@ -106,7 +107,7 @@
 			},
 			checkItem(item) {
 				item.isChecked = !item.isChecked
-				console.log('ite',item)
+				console.log('ite', item)
 				if (item.isChecked) {
 					this.checkedList.push(item)
 				} else {
@@ -129,21 +130,117 @@
 						leader: this.info,
 						members: this.checkedList
 					},
-					success: (data) => {
-						this.socket.emit('createdNewGroup',{leader:this.info,members:this.checkedList,groupId:data.data.groupId,groupName:data.data.groupName})
+					success: async (data) => {
+						let groupId = data.data.groupId
+						let groupName = data.data.groupName
+						let that = this
+
+
+						let time = Date.now()
+						uni.request({
+							url: this.$baseUrl + '/group/acceptGroupMessage',
+							method: 'post',
+							data: {
+								groupId: groupId,
+								message: {
+									mid: groupId + time,
+									content: '你加入了群聊 ' + groupName,
+									sender: '',
+									tag: 'welcome',
+									time: time,
+									isRead: 0
+								}
+							},
+							success: (res) => {
+
+							}
+
+						})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+						await that.saveHomeMessageList({
+							account: that.info.account,
+							friendId: groupId,
+							sender: '',
+							lastDate: Date.now(),
+							isShow: true,
+							lastContent: '你已加入了群聊 ' + groupName,
+							notRead: 1,
+							isGroup: true,
+							isTop: false,
+							groupName: groupName,
+							isRemind: true,
+							avatar: data.data.groupAvatar
+						})
+
+
+						await this.checkedList.forEach((item) => {
+							that.saveHomeMessageList({
+								account: item.friendId + '',
+								friendId: groupId + '',
+								sender: '',
+								lastDate: Date.now(),
+								isShow: true,
+								lastContent: '你已加入了群聊 ' + groupName,
+								notRead: 1,
+								isGroup: true,
+								isTop: false,
+								groupName: groupName,
+								isRemind: true,
+								avatar: data.data.groupAvatar
+							})
+						})
+						
+						this.socket.emit('createdNewGroup', {
+							leader: this.info,
+							members: this.checkedList,
+							groupId: data.data.groupId,
+							groupName: data.data.groupName
+						})
+						this.socket.emit('updateMessageList')
+						
+
 					}
 				})
 			},
-			updateGroupList(group){
-				
+			saveHomeMessageList(obj) {
+				uni.request({
+					url: this.$baseUrl + '/users/chat/saveHomeMessageList',
+					method: 'post',
+					data: obj,
+					success: (data) => {
+						console.log(2)
+					}
+				})
+			},
+			updateGroupList(group) {
+
 				uni.request({
 					url: this.$baseUrl + '/users/contacts/updateGroupList',
 					method: 'post',
 					data: {
-						group:group
+						group: group
 					},
 					success: (data) => {
-						
+
 					}
 				})
 			}
@@ -161,27 +258,37 @@
 					this.info = {
 						account: option.account,
 						name: data.data.info.name,
-						avatar:data.data.info.avatar
+						avatar: data.data.info.avatar
 					}
 				}
 			})
-			this.socket.on('updateGroupList',data => {
-				console.log('0nnnnn',data.members,option.account)
-				let index = data.members.findIndex((item,i)=>{
+		
+			this.socket.on('updateGroupList', data => {
+				console.log('0nnnnn', data.members, option.account)
+				let index = data.members.findIndex((item, i) => {
 					return item.account === option.account
 				})
-				if(index === data.members.length - 1){
-					console.log('asdasd',index)
-					for(let i=0;i<=index;i++){
+				if (index === data.members.length - 1) {
+					console.log('asdasd', index, data)
+					for (let i = 0; i <= index; i++) {
 						this.updateGroupList({
-							account:data.members[i].account,
-							groupId:data.groupId,
-							groupName:data.groupName,
-							permission:i === index ? data.members[index].permission:data.members[i].permission
+							account: data.members[i].account,
+							groupId: data.groupId,
+							groupName: data.groupName,
+							permission: i === index ? data.members[index].permission : data.members[i]
+								.permission,
+							groupAvatar: 'https://fhin-1308131188.cos.ap-nanjing.myqcloud.com/avatar/1.jpeg'
+
 						})
 					}
 				}
+				uni.reLaunch({
+					url: '/pages/home/home'
+				})
 			})
+		},
+		onUnload() {
+			this.socket.removeAllListeners('updateGroupList')
 		}
 
 	}
