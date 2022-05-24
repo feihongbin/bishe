@@ -1198,10 +1198,10 @@ let saveHomeMessageList = function (req, res, next) {
   let body = req.body
   let originNotRead = 0
   if (isMobile(account)) {
-    accountModel.find({ tel: account, "messageList.friendId": friendId }, (err, data) => {
+    accountModel.find({ tel: account, "messageList.friendId": friendId + '' }, (err, data) => {
       if (data.length > 0) {
         console.log('ax', data[0])
-        accountModel.updateOne({ tel: account }, { "$pull": { messageList: { friendId: friendId } } }, (err) => {
+        accountModel.updateOne({ tel: account }, { "$pull": { messageList: { friendId: friendId + '' } } }, (err) => {
           if (err) {
             console.log(err)
           }
@@ -1219,10 +1219,10 @@ let saveHomeMessageList = function (req, res, next) {
     })
 
   } else {
-    accountModel.find({ tid: account, "messageList.friendId": friendId }, (err, data) => {
+    accountModel.find({ tid: account, "messageList.friendId": friendId + '' }, (err, data) => {
       if (data.length > 0) {
-        originNotRead = data[0].messageList.find(item => item.friendId === friendId).notRead + 1
-        accountModel.updateOne({ tid: account }, { "$pull": { messageList: { friendId: friendId } } }, (err) => {
+        originNotRead = data[0].messageList.find(item => item.friendId == friendId + '').notRead + 1
+        accountModel.updateOne({ tid: account }, { "$pull": { messageList: { friendId: friendId + '' } } }, (err) => {
           if (err) {
             console.log(err)
           }
@@ -1231,7 +1231,7 @@ let saveHomeMessageList = function (req, res, next) {
         originNotRead = 1
       }
 
-      accountModel.updateOne({ tid: account }, { "$push": { messageList: { ...body, notRead: originNotRead } } }, (err) => {
+      accountModel.updateOne({ tid: account }, { "$push": { messageList: { ...body, notRead: originNotRead, friendId: friendId + '' } } }, (err) => {
         if (err) {
           console.log(err)
         }
@@ -1448,18 +1448,22 @@ let changeGroupRemind = function (req, res, next) {
 }
 
 let quitGroup = function (req, res, next) {
-  let { account, group, managers } = req.body
+  let { account, group, managers, groupName, isDisband } = req.body
 
   accountModel.find({ tid: account }, (err, data) => {
     let acName = data[0].name
-    managers.forEach(item => {
+    let tipMsg = groupName && groupName.length > 0 ? '你被移除了群聊 ' + groupName : acName + '退出了群聊'
+    if (isDisband) {
+      tipMsg = groupName + ' 已被群主解散'
+    }
+    managers.length > 0 && managers.forEach(item => {
       let objItem = {
         account: item,
         friendId: '999',
         sender: '群通知',
         lastDate: Date.now(),
         isShow: false,
-        lastContent: acName + '退出了群聊',
+        lastContent: tipMsg,
         notRead: 1,
         isGroup: false,
         isTop: false,
@@ -1490,7 +1494,7 @@ let quitGroup = function (req, res, next) {
 
 
   if (isMobile(account)) {
-    accountModel.updateOne({ tel: account }, { "$pull": { groupList: { group: group } } }, (err) => {
+    accountModel.updateOne({ tel: account }, { "$pull": { groupList: { group: Number.parseInt(group) } } }, (err) => {
       accountModel.updateOne({ tel: account }, { "$pull": { messageList: { friendId: group } } }, (err) => {
         res.send({
           code: 200,
@@ -1499,11 +1503,12 @@ let quitGroup = function (req, res, next) {
       })
     })
   } else {
-    accountModel.updateOne({ tid: account }, { "$pull": { groupList: { group: group } } }, (err) => {
+    accountModel.updateOne({ tid: account }, { "$pull": { groupList: { group: Number.parseInt(group) } } }, (err) => {
       accountModel.updateOne({ tid: account }, { "$pull": { messageList: { friendId: group } } }, (err) => {
         res.send({
           code: 200,
-          msg: '退群成功'
+          msg: '退群成功',
+          aa: Number.parseInt(group)
         })
       })
     })
@@ -1581,7 +1586,7 @@ let groupRequest = function (req, res, next) {
 let accountJoinGroup = function (req, res, next) {
   let { group, groupName, permission, groupAvatar, account } = req.body
   let objectItem = {
-    group,
+    group: Number.parseInt(group),
     groupName,
     permission,
     groupAvatar
@@ -1620,7 +1625,8 @@ let updateGroupRequest = function (req, res, next) {
       })
     })
   } else {
-    accountModel.updateOne({ tid: account, "toBeConfirmed.friendId": friendId, "groupRequest.groupId": groupId }, { $set: { "groupRequest.$.status": status } }, (err, data) => {
+    accountModel.updateOne({ tid: account, "groupRequest.friendId": friendId, "groupRequest.groupId": groupId }, { $set: { "groupRequest.$.status": status } }, (err, data) => {
+      console.log('1624', data, status)
       res.send({
         code: 200,
         msg: 'success'
@@ -1652,23 +1658,77 @@ let changePermission = function (req, res, next) {
 let editGroupName = function (req, res, next) {
   let { account, groupId, name } = req.body
   if (isMobile(account)) {
-    accountModel.updateOne({ tel: account, "groupList.group": groupId }, { $set: { "groupList.$.groupName": name } }, (err, data) => {
-      res.send({
-        code: 200,
-        msg: 'success'
+    accountModel.updateOne({ tel: account, "groupList.group": Number.parseInt(groupId) }, { $set: { "groupList.$.groupName": name } }, (err, data) => {
+      accountModel.updateOne({ tel: account, "messageList.friendId": groupId }, { $set: { "messageList.$.groupName": name } }, (err, data) => {
+        res.send({
+          code: 200,
+          msg: 'success'
+        })
       })
     })
   } else {
-    accountModel.updateOne({ tid: account, "groupList.group": groupId }, { $set: { "groupList.$.groupName": name } }, (err, data) => {
-      res.send({
-        code: 200,
-        msg: 'success'
+    accountModel.updateOne({ tid: account, "groupList.group": Number.parseInt(groupId) }, { $set: { "groupList.$.groupName": name } }, (err, data) => {
+      accountModel.updateOne({ tid: account, "messageList.friendId": groupId }, { $set: { "messageList.$.groupName": name } }, (err, data) => {
+        res.send({
+          code: 200,
+          msg: 'success'
+        })
       })
+
+
     })
   }
 
 }
 
+let search = function (req, res, next) {
+  let { account } = req.body
+  if (isMobile(account)) {
+    accountModel.find({ tel: account }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success',
+        friends: data[0].friendsList || []
+      })
+    })
+  } else {
+    accountModel.find({ tid: account }, (err, data) => {
+      res.send({
+        code: 200,
+        msg: 'success',
+        friends: data[0].friendsList || []
+      })
+    })
+  }
+}
+
+
+let deleteGroup = function (req, res, next) {
+  let { account, groupId } = req.body
+  if (isMobile(account)) {
+    accountModel.updateOne({ tel: account }, { "$pull": { groupList: { group: Number(groupId) } } }, (err) => {
+      if (err) {
+        console.log(err)
+        return
+      }
+      res.send({
+        code: 200,
+        msg: 'success',
+      })
+    })
+  } else {
+    accountModel.updateOne({ tel: account }, { "$pull": { groupList: { group: Number(groupId) } } }, (err) => {
+      if (err) {
+        console.log(err)
+        return
+      }
+      res.send({
+        code: 200,
+        msg: 'success',
+      })
+    })
+  }
+}
 module.exports = {
   sendPhoneCode,
   newAccount,
@@ -1716,5 +1776,7 @@ module.exports = {
   getPhone,
   changePsw,
   changePermission,
-  editGroupName
+  editGroupName,
+  search,
+  deleteGroup
 }

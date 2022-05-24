@@ -71,6 +71,13 @@ let newGroup = function (req, res, next) {
 let getGroupInfo = function (req, res, next) {
   let { groupId } = req.body
   groupModel.find({ groupId: groupId }, (err, data) => {
+    if (!data[0]) {
+      res.send({
+        code: 400,
+        msg: 'not found'
+      })
+      return
+    }
     let m = data[0].members
     let ml = data[0].messageList
     let map = new Map(m.map(item => [item.member, [item.avatar, item.groupNote]]))
@@ -214,6 +221,35 @@ let changePermission = function (req, res, next) {
   })
 }
 
+let search = function (req, res, next) {
+  let { account } = req.body
+
+  groupModel.find({ "members.member": account }, (err, data) => {
+    console.log(data)
+    res.send({
+      code: 200,
+      msg: 'success',
+      groups: data
+    })
+  })
+}
+
+let disbandGroup = function (req, res, next) {
+  let { groupId } = req.body
+
+
+  groupModel.deleteOne({ "groupId": groupId }, function (err, doc) {
+    if (err) {
+      console.log("出错了", err)
+      return
+    }
+    res.send({
+      code: 200,
+      msg: 'success',
+    })
+  })
+}
+
 module.exports = {
   newGroup,
   getGroupInfo,
@@ -223,5 +259,7 @@ module.exports = {
   myName,
   quitGroup,
   groupAddAccount,
-  changePermission
+  changePermission,
+  search,
+  disbandGroup
 }

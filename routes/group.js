@@ -14,6 +14,12 @@ router.post('/quitGroup', group.quitGroup);
 router.post('/groupAddAccount', group.groupAddAccount);
 router.post('/changePermission', group.changePermission);
 
+router.post('/search', group.search);
+
+router.post('/disbandGroup', group.disbandGroup);//解散群聊
+
+
+
 
 
 

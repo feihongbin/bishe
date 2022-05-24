@@ -61,6 +61,10 @@ router.post('/chat/changeGroupRemind', account.changeGroupRemind);
 
 
 router.post('/quitGroup', account.quitGroup);
+router.post('/deleteGroup', account.deleteGroup);
+
+
+
 router.post('/groupRequest', account.groupRequest);
 router.post('/accountJoinGroup', account.accountJoinGroup);
 router.post('/updateGroupRequest', account.updateGroupRequest);
@@ -68,6 +72,9 @@ router.post('/changePermission', account.changePermission);
 
 
 router.post('/editGroupName', account.editGroupName);
+
+router.post('/search', account.search);
+
 
 
 
