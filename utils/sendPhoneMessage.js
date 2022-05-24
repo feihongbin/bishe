@@ -7,8 +7,8 @@ function sendPhoneCode(phone, code) {
 
     const clientConfig = {
       credential: {
-        secretId: "AKIDmMfhT2LN8cra3FBqELBk23mHVS8XfX8S",
-        secretKey: "4rNbZFemdDWYJo31h7G8j36sMZVAYfVX",
+        secretId: "",
+        secretKey: "",
       },
       region: "ap-nanjing",
       profile: {
