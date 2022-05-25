@@ -100,6 +100,10 @@ module.exports = function (io) {
     socket.on('acceptVedioInvite', () => {
       socket.broadcast.emit('accept')
     })
+
+    socket.on('updatedContactsGroup', () => {
+      socket.broadcast.emit('refreshContactsGroup')
+    })
   })
 
 }
